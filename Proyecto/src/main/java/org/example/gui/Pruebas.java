@@ -1,4 +1,4 @@
-package org.example.GUI;
+package org.example.gui;
 
 import javax.swing.*;
 import java.awt.*;
