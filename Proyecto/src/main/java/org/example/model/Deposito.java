@@ -41,4 +41,17 @@ public class Deposito<T> {
     public int size() {
         return items.size();
     }
+    public List<T> getAllItems() {
+        return new ArrayList<>(items);  // Devuelve una copia de la lista de items
+    }
+    /**
+     * Devuelve el primer elemento del depósito sin eliminarlo.
+     * @return El primer elemento del depósito si existe, de lo contrario {@code null}
+     */
+    public T peek() {
+        if (!items.isEmpty()) { // Verifica que la lista no está vacía
+            return items.get(0); // Retorna el primer elemento sin eliminarlo
+        }
+        return null; // Retorna null si la lista está vacía.
+    }
 }

@@ -15,7 +15,7 @@ public class Super8 extends Dulce {
      * @param sabor El sabor del Super8
      */
     public Super8(int codigo, String nombre, int precio, String sabor) {
-        super(codigo, nombre, Precios.SUPER8.getPrecio(), sabor); // Llama al constructor de la clase base Dulce con el precio predeterminado.
+        super(codigo, nombre, Precios.SUPER8.getPrecio(), sabor, "expendedorIcon/super8.png"); // Llama al constructor de la clase base Dulce con el precio predeterminado.
     }
 
     /**

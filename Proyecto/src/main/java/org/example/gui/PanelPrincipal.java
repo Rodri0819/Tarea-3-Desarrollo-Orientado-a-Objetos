@@ -9,6 +9,7 @@ public class PanelPrincipal extends JPanel {
     private PanelExpendedor exp;
 
     public PanelPrincipal(Expendedor expendedor) {
+
         com = new PanelComprador();
         exp = new PanelExpendedor(expendedor);  // Pasa la instancia de Expendedor
         this.setBackground(Color.white);     // Configura el fondo del panel principal
@@ -31,7 +32,7 @@ public class PanelPrincipal extends JPanel {
 
     }
 
-    public void paintComponent (Graphics g) { // todo se dibuja a partir de este método
+    public void paintComponent(Graphics g) { // todo se dibuja a partir de este método
         super.paintComponent(g); //llama al método pint al que hace override en la super clase
         //el de la super clase solo pinta el fondo (background)
         com.paintComponent(g); //llama al metodo paintComponent definido en el PanelComprador

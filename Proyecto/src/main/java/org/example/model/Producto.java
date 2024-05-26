@@ -1,5 +1,10 @@
 package org.example.model;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Clase abstracta que representa un producto
  * Sirve como clase base para otras clases como {@link Dulce} y {@link Bebida}, proporcionando una estructura común
@@ -8,7 +13,9 @@ package org.example.model;
 public abstract class Producto {
     private int codigo;   // Código identificador del producto.
     private String nombre; // Nombre del producto.
-    private int precio;   // Precio del producto en
+    private int precio;   // Precio del producto
+    private Image imagen;  // I magen del producto
+
 
     /**
      * Constructor para inicializar un nuevo producto con un código, nombre y precio
@@ -16,10 +23,11 @@ public abstract class Producto {
      * @param nombre El nombre del producto
      * @param precio El precio del producto en centavos
      */
-    public Producto(int codigo, String nombre, int precio) {
+    public Producto(int codigo, String nombre, int precio, String imagePath) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.precio = precio;
+        setImagen(imagePath);
     }
 
     /** Métodos getter y setter para las propiedades del producto **/
@@ -77,4 +85,19 @@ public abstract class Producto {
      * @return Una cadena que describe la acción de consumir el producto
      */
     public abstract String consumir();
+
+    // Setter para la imagen que maneja la carga de archivo
+    private void setImagen(String imagePath) {
+        try {
+            this.imagen = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.imagen = null;  // Considerar una imagen predeterminada en caso de error
+        }
+    }
+
+    // Getter para la imagen
+    public Image getImagen() {
+        return imagen;
+    }
 }

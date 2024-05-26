@@ -14,9 +14,9 @@ public abstract class Dulce extends Producto {
      * @param precio El precio del dulce
      * @param sabor El sabor del dulce
      */
-    public Dulce(int codigo, String nombre, int precio, String sabor) {
-        super(codigo, nombre, precio); // Llama al constructor de la clase base, Producto.
-        this.sabor = sabor;            // Inicializa el sabor del dulce con el valor proporcionado.
+    public Dulce(int codigo, String nombre, int precio, String sabor, String imagePath) {
+        super(codigo, nombre, precio, imagePath); // Llama al constructor de la clase base, Producto.
+        this.sabor = sabor; // Inicializa el sabor del dulce con el valor proporcionado.
     }
 
     /**

@@ -1,8 +1,10 @@
 package org.example.gui;
 import org.example.model.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 
 public class Ventana extends JFrame {
@@ -20,5 +22,16 @@ public class Ventana extends JFrame {
         this.setResizable(false); //Impide que la ventana sea redimensionada
         this.setLocationRelativeTo(null); //Centra la ventana
         this.setVisible(true); //Hace visible la ventana
+        // Cargar el icono de la ventana
+        try {
+            File iconFile = new File("icon/icon.png");
+            if (iconFile.exists()) {
+                this.setIconImage(ImageIO.read(iconFile));
+            } else {
+                System.err.println("Archivo no encontrado: " + iconFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

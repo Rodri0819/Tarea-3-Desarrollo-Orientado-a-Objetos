@@ -14,7 +14,7 @@ public class Fanta extends Bebida {
      * @param marca La marca de la Fanta
      */
     public Fanta(int codigo, String nombre, int precio, String marca) {
-        super(codigo, nombre, Precios.FANTA.getPrecio(), marca); // Llama al constructor de la clase base Bebida con el precio predeterminado.
+        super(codigo, nombre, Precios.FANTA.getPrecio(), marca, "expendedorIcon/fanta.png"); // Llama al constructor de la clase base Bebida con el precio predeterminado.
     }
 
     /**

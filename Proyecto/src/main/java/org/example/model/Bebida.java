@@ -18,9 +18,9 @@ public abstract class Bebida extends Producto {
      * @param precio : El precio de la bebida
      * @param marca : La marca de la bebida
      */
-    public Bebida(int codigo, String nombre, int precio, String marca) {
-        super(codigo, nombre, precio); // Llama al constructor de la clase base, Producto
-        this.marca = marca;            // Inicializa la marca de la bebida con el valor proporcionado
+    public Bebida(int codigo, String nombre, int precio, String marca, String imagePath) {
+        super(codigo, nombre, precio, imagePath);
+        this.marca = marca;
     }
 
     /**

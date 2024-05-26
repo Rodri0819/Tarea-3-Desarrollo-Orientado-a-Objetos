@@ -14,7 +14,7 @@ public class Snickers extends Dulce {
      * @param sabor El sabor del Snickers
      */
     public Snickers(int codigo, String nombre, int precio, String sabor) {
-        super(codigo, nombre, Precios.SNICKERS.getPrecio(), sabor); // Llama al constructor de la clase base Dulce con el precio predeterminado.
+        super(codigo, nombre, Precios.SNICKERS.getPrecio(), sabor, "expendedorIcon/snickers.png"); // Llama al constructor de la clase base Dulce con el precio predeterminado.
     }
 
     /**

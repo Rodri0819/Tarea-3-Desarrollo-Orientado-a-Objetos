@@ -14,7 +14,7 @@ public class Sprite extends Bebida {
      * @param marca La marca de la Sprite
      */
     public Sprite(int codigo, String nombre, int precio, String marca) {
-        super(codigo, nombre, Precios.SPRITE.getPrecio(), marca); // Llama al constructor de la clase base Bebida con el precio predeterminado.
+        super(codigo, nombre, Precios.SPRITE.getPrecio(), marca, "expendedorIcon/sprite.png"); // Llama al constructor de la clase base Bebida con el precio predeterminado.
     }
 
     /**

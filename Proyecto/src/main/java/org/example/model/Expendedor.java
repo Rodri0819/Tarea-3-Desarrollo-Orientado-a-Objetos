@@ -17,6 +17,8 @@ public class Expendedor {
     public static final int SNICKERS = 5;
     private Deposito<Moneda> monedaVueltas; //Instancia de deposito para el vuelto de las monedas
     private List<Deposito<Producto>> productos; //Instancia de deposito para los productos
+    private Deposito<Producto> depósitoProductoComprado = new Deposito<>();
+
     /**
      * Constructor del Expendedor que inicializa un expendedor
      * Inicializa todos los productos, agregando las bebidas y duces una cantidad de @param numProductos al deposito
@@ -83,7 +85,10 @@ public class Expendedor {
             monedaVueltas.add(new Moneda100()); //Se agregan monedas de 100 al deposito de vuelto
             cambio = cambio - 100; //Descuenta esa moneda de 100 al bucle
         }
-        return depositoProducto.get();
+
+        // Agregar el producto comprado al depósito especial.
+        depósitoProductoComprado.add(depositoProducto.get());
+        return null;
     }
 
     /**
@@ -115,5 +120,17 @@ public class Expendedor {
 
     public int getNumeroDeSnickers() {
         return productos.get(SNICKERS - 1).size();
+    }
+
+    public Deposito<Moneda> getMonedaVueltas() {
+        return monedaVueltas;
+    }
+
+    public List<Deposito<Producto>> getProductos() {
+        return productos;
+    }
+
+    public Deposito<Producto> getDepósitoProductoComprado() {
+        return depósitoProductoComprado;
     }
 }
