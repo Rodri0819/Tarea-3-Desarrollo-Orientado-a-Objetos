@@ -250,15 +250,51 @@ public class PanelComprador extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 actualizarProductoSeleccionado(); //Actualizamos el producto
                 System.out.println(productoSeleccionado);
-                if (productoSeleccionado.equals("Ninguno")) {
-                    JOptionPane.showMessageDialog(PanelComprador.this, "Por favor, seleccione un producto.");
-                } else {
-                    if (totalMonedas > 1000) {
-                        JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
-                    } else {
-                        JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
-                    }
+                switch (productoSeleccionado) {
+                    case "Ninguno":
+                        JOptionPane.showMessageDialog(PanelComprador.this, "Por favor, seleccione un producto.");
+                        break;
+                    case "Coca Cola":
+                        if (totalMonedas >= Precios.COCA_COLA.getPrecio()) {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                            actualizarTotalMonedas(totalMonedas-Precios.COCA_COLA.getPrecio());
+
+                        } else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
+                        }
+                        break;
+                    case "Sprite":
+                        if (totalMonedas >= Precios.SPRITE.getPrecio()) {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+
+                        } else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
+                        }
+                        break;
+                    case "Fanta":
+                        if (totalMonedas >= Precios.FANTA.getPrecio()) {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                        } else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
+                        }
+                        break;
+                    case "Super8":
+                        if (totalMonedas >= Precios.SUPER8.getPrecio()) {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                        } else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
+                        }
+                        break;
+                    case "Snickers":
+                        if (totalMonedas >= Precios.SNICKERS.getPrecio()) {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                        } else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
+                        }
+                        break;
+
                 }
+
             }
         });
 

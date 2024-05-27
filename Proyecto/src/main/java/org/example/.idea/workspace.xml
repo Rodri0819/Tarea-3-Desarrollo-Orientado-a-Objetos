@@ -5,7 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1ec2a3eb-229f-41c7-be0f-15610c4e6de8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../.idea/discord.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/discord.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/discord.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/PanelComprador.java" beforeDir="false" afterPath="$PROJECT_DIR$/gui/PanelComprador.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Moneda.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Moneda.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Moneda100.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Moneda100.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Moneda1000.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Moneda1000.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Moneda1500.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Moneda1500.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Moneda500.java" beforeDir="false" afterPath="$PROJECT_DIR$/model/Moneda500.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../out/production/org/org/example/model/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/org/org/example/model/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,10 +55,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "buildGUI",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/rodri/OneDrive/Escritorio/Tarea 3/Tarea-3-Desarrollo-Orientado-a-Objetos/Proyecto",
+    "last_opened_file_path": "C:/Users/Usuario 1/Desktop/DOO/Tarea-3-Desarrollo-Orientado-a-Objetos/Proyecto",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,8 +76,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
-        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+        <option value="jdk-17.0.10-corretto-17.0.10-4caba194b151-5cd809f4" />
       </set>
     </attachedChunks>
   </component>
@@ -83,6 +93,7 @@
       <workItem from="1716344884229" duration="19000" />
       <workItem from="1716589942364" duration="15000" />
       <workItem from="1716589975731" duration="5000" />
+      <workItem from="1716774468678" duration="22000" />
     </task>
     <servers />
   </component>

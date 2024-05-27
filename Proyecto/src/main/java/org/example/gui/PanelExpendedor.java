@@ -18,16 +18,53 @@ public class PanelExpendedor extends JPanel {
         this.expendedor = expendedor;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));  // Usa BoxLayout
         this.setBackground(new Color(0xFFC4C4)); //Color fondo
+
         Labels();
+
+        deposito();
     }
 
     private void Labels() {
         JLabel titulo = new JLabel("Expendedor");
         titulo.setFont(new Font("Cooper Black", Font.PLAIN, 20));
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar horizontalmente
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
         this.add(titulo);
-    }
 
+        JLabel coca = new JLabel("Coca Cola: $" + Precios.COCA_COLA.getPrecio());
+        coca.setFont(new Font("Arial", Font.PLAIN, 16));
+        coca.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        this.add(coca);
+        JLabel sprite = new JLabel("Sprite: $" + Precios.SPRITE.getPrecio());
+        sprite.setFont(new Font("Arial", Font.PLAIN, 16));
+        sprite.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        this.add(sprite);
+        JLabel fanta = new JLabel("Fanta: $" + Precios.FANTA.getPrecio());
+        fanta.setFont(new Font("Arial", Font.PLAIN, 16));
+        fanta.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        this.add(fanta);
+        JLabel super8 = new JLabel("Super 8: $" + Precios.SUPER8.getPrecio());
+        super8.setFont(new Font("Arial", Font.PLAIN, 16));
+        super8.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        this.add(super8);
+        JLabel snickers = new JLabel("Snickers: $" + Precios.SNICKERS.getPrecio());
+        snickers.setFont(new Font("Arial", Font.PLAIN, 16));
+        snickers.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        this.add(snickers);
+        this.add(Box.createVerticalStrut(550));
+    }
+    private void deposito() {
+        JPanel depositoPanel = new JPanel();
+        depositoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Alinear a la derecha
+        depositoPanel.setBackground(new Color(0x991C35D0)); // Color sólido sin transparencia
+        depositoPanel.setPreferredSize(new Dimension(200, 100)); // Tamaño visible
+
+        JLabel label = new JLabel("Área de Depósito");
+        label.setFont(new Font("Arial", Font.BOLD, 16));
+        depositoPanel.add(label);
+
+        // Añade el panel deposito al sur del BorderLayout
+        this.add(depositoPanel, BorderLayout.SOUTH);
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -36,7 +73,7 @@ public class PanelExpendedor extends JPanel {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         int x = 150;
-        int y = 50;
+        int y = 150;
         int productosPorFila = 5;  // Número de productos por fila
         int productoActual = 0;
 
