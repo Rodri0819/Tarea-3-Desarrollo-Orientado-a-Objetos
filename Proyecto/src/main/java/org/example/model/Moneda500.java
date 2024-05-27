@@ -14,4 +14,8 @@ public class Moneda500 extends Moneda {
     public int getValor() {
         return 500;
     }
+    @Override
+    public String getImagenPath() {
+        return "expendedorIcon/moneda.png"; // Asegúrate de poner la ruta correcta
+    }
 }

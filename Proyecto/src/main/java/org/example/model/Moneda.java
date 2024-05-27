@@ -6,10 +6,12 @@ package org.example.model;
  */
 
 public abstract class Moneda implements Comparable<Moneda> {
+
     /**
      * Método getValor debe ser implementado por las subclases para retornar el valor de la moneda
      */
     public abstract int getValor();
+    public abstract String getImagenPath();
 
     /**
      * Método compareTo implementa la lógica de comparación de la interfaz Comparable
