@@ -10,7 +10,7 @@ public class PanelPrincipal extends JPanel {
 
     public PanelPrincipal(Expendedor expendedor) {
 
-        com = new PanelComprador();
+        com = new PanelComprador(expendedor);
         exp = new PanelExpendedor(expendedor);  // Pasa la instancia de Expendedor
         this.setBackground(Color.white);     // Configura el fondo del panel principal
 

@@ -14,27 +14,26 @@ import java.util.ArrayList;
 
 public class PanelComprador extends JPanel {
     private List<Moneda> monedas = new ArrayList<>();
-    private JPanel monedasPanel;
+    private JPanel monedasPanel, contentPanel; // Mover contentPanel a nivel de clase
     private JLabel productoSeleccionadoLabel; // Declaración de etiquetas
     private JLabel totalMonedasLabel;
     private String productoSeleccionado = "Ninguno"; // Almacenar el producto seleccionado
     private JComboBox<String> comboBox; // ComboBox para seleccionar el producto
     private int totalMonedas = 0; // Almacenar el total de monedas
+    private Expendedor expendedor;
+    int temp = 1;
 
 
 
-    public PanelComprador() {
+    public PanelComprador(Expendedor expendedor) {
+        this.expendedor = expendedor;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Usar BoxLayout
         setBackground(new Color(0xDBB2FF)); // Color de fondo
         Labels();
         this.add(Box.createVerticalStrut(15));
-        Monedas();
-        this.add(Box.createVerticalStrut(15));
         TusMonedas();
         this.add(Box.createVerticalStrut(15));
-        Producto();
-        this.add(Box.createVerticalStrut(15));
-        addCompraButton();
+        actualizarPantalla();
         this.add(Box.createVerticalStrut(15));
 
     }
@@ -70,7 +69,7 @@ public class PanelComprador extends JPanel {
     }
 
     private void Monedas() {
-        JPanel contentPanel = new JPanel();
+        contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
         contentPanel.setBackground(new Color(0xDBB2FF));
 
@@ -106,6 +105,9 @@ public class PanelComprador extends JPanel {
         monedasPanel.setLayout(new BoxLayout(monedasPanel, BoxLayout.Y_AXIS));
         monedasPanel.setBackground(new Color(0xDBB2FF));
         monedasPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        monedasPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+
 
         JLabel monedasLabel = new JLabel("Tus Monedas");
         monedasLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -182,6 +184,43 @@ public class PanelComprador extends JPanel {
         });
 
         return button;
+    }
+
+    private void GuardarMonedas() {
+        JButton guardar = new JButton("Depositar monedas");
+        guardar.setFont(new Font("Arial", Font.BOLD, 20));
+        guardar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        guardar.setBorder(BorderFactory.createRaisedBevelBorder());
+        guardar.setBackground(new Color(0x60AB90));
+        guardar.setForeground(Color.WHITE);
+
+        guardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                temp = 0;
+                actualizarPantalla();
+            }
+        });
+      contentPanel.add(guardar);
+    }
+
+    public void actualizarPantalla(){
+        if (temp == 1) {
+            Monedas();
+            this.add(Box.createVerticalStrut(15));
+            GuardarMonedas();
+            repaint();
+
+        } else {
+            contentPanel.removeAll();
+            revalidate();
+            repaint();
+            Producto();
+
+            this.add(Box.createVerticalStrut(15));
+            addCompraButton();
+            this.add(Box.createVerticalStrut(15));
+        }
     }
 
     private JLabel loadImage() {
@@ -266,7 +305,7 @@ public class PanelComprador extends JPanel {
                     case "Sprite":
                         if (totalMonedas >= Precios.SPRITE.getPrecio()) {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
-
+                            actualizarTotalMonedas(totalMonedas-Precios.SPRITE.getPrecio());
                         } else {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
                         }
@@ -274,6 +313,7 @@ public class PanelComprador extends JPanel {
                     case "Fanta":
                         if (totalMonedas >= Precios.FANTA.getPrecio()) {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                            actualizarTotalMonedas(totalMonedas-Precios.FANTA.getPrecio());
                         } else {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
                         }
@@ -281,6 +321,7 @@ public class PanelComprador extends JPanel {
                     case "Super8":
                         if (totalMonedas >= Precios.SUPER8.getPrecio()) {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                            actualizarTotalMonedas(totalMonedas-Precios.SUPER8.getPrecio());
                         } else {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
                         }
@@ -288,6 +329,7 @@ public class PanelComprador extends JPanel {
                     case "Snickers":
                         if (totalMonedas >= Precios.SNICKERS.getPrecio()) {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + productoSeleccionado);
+                            actualizarTotalMonedas(totalMonedas-Precios.SNICKERS.getPrecio());
                         } else {
                             JOptionPane.showMessageDialog(PanelComprador.this, "Eres pobre no te alcanza");
                         }
