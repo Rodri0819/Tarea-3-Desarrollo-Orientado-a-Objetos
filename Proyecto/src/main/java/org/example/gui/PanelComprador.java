@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class PanelComprador extends JPanel {
+    private PanelPrincipal panelPrincipal;
     private List<Moneda> monedas = new ArrayList<>();
     private JPanel monedasPanel, contentPanel; // Mover contentPanel a nivel de clase
     private JLabel productoSeleccionadoLabel; // Declaración de etiquetas
@@ -23,19 +25,17 @@ public class PanelComprador extends JPanel {
     private Expendedor expendedor;
     int temp = 1;
 
-
-
-    public PanelComprador(Expendedor expendedor) {
+    public PanelComprador(Expendedor expendedor, PanelPrincipal panelPrincipal) {
         this.expendedor = expendedor;
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Usar BoxLayout
-        setBackground(new Color(0xDBB2FF)); // Color de fondo
+        this.panelPrincipal = panelPrincipal;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(new Color(0xDBB2FF));
         Labels();
         this.add(Box.createVerticalStrut(15));
         TusMonedas();
         this.add(Box.createVerticalStrut(15));
         actualizarPantalla();
         this.add(Box.createVerticalStrut(15));
-
     }
 
     private void Labels() {
@@ -65,7 +65,7 @@ public class PanelComprador extends JPanel {
 
     public void actualizarTotalMonedas(int total) {
         totalMonedas = total; // Actualizar el total de monedas
-        totalMonedasLabel.setText("Total Monedas: $" + totalMonedas);
+        totalMonedasLabel.setText("Total Monedas $" + totalMonedas);
     }
 
     private void Monedas() {
@@ -82,7 +82,6 @@ public class PanelComprador extends JPanel {
         monedasLabel.setFont(new Font("Arial", Font.BOLD, 16));
         monedasLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         monedasPanel.add(monedasLabel);
-
 
         // Añade botones al monedasPanel
         monedasPanel.add(createMonedaButton("$100"));
@@ -107,8 +106,6 @@ public class PanelComprador extends JPanel {
         monedasPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         monedasPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-
-
         JLabel monedasLabel = new JLabel("Tus Monedas");
         monedasLabel.setFont(new Font("Arial", Font.BOLD, 16));
         monedasPanel.add(monedasLabel);
@@ -122,7 +119,7 @@ public class PanelComprador extends JPanel {
 
     private void addMonedaToPanel(Moneda nuevaMoneda) {
         JPanel monedaPanel = new JPanel();
-        monedaPanel.setLayout(new BoxLayout(monedaPanel, BoxLayout.X_AXIS)); // Cambiar a BoxLayout
+        monedaPanel.setLayout(new BoxLayout(monedaPanel, BoxLayout.X_AXIS));
         monedaPanel.setBackground(new Color(0xDBB2FF));
 
         JLabel label = new JLabel("Moneda $" + nuevaMoneda.getValor());
@@ -151,7 +148,6 @@ public class PanelComprador extends JPanel {
         button.setBackground(new Color(0xE1E1E1));
         button.setForeground(Color.BLACK);
 
-        // Añadir ActionListener para manejar la acción de clic en el botón
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -173,7 +169,6 @@ public class PanelComprador extends JPanel {
                 if (nuevaMoneda != null) {
                     monedas.add(nuevaMoneda);
                     addMonedaToPanel(nuevaMoneda);
-                    // Calcular el total de monedas
                     int total = 0;
                     for (Moneda moneda : monedas) {
                         total += moneda.getValor();
@@ -186,11 +181,10 @@ public class PanelComprador extends JPanel {
         return button;
     }
 
-
     private void GuardarMonedas() {
         JButton guardar = new JButton("Depositar monedas");
         guardar.setFont(new Font("Arial", Font.BOLD, 20));
-        guardar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        guardar.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         guardar.setBorder(BorderFactory.createRaisedBevelBorder());
         guardar.setBackground(new Color(0x60AB90));
         guardar.setForeground(Color.WHITE);
@@ -202,10 +196,8 @@ public class PanelComprador extends JPanel {
                 actualizarPantalla();
             }
         });
-      contentPanel.add(guardar);
+        contentPanel.add(guardar);
     }
-
-
 
     private void actualizarMonedasPanel() {
         monedasPanel.removeAll();
@@ -216,21 +208,18 @@ public class PanelComprador extends JPanel {
         monedasPanel.repaint();
     }
 
-    public void actualizarPantalla(){
+    public void actualizarPantalla() {
         if (temp == 1) {
             Monedas();
             this.add(Box.createVerticalStrut(15));
             GuardarMonedas();
             this.add(Box.createVerticalStrut(15));
-
             repaint();
-
         } else {
             contentPanel.removeAll();
             revalidate();
             repaint();
             Producto();
-
             this.add(Box.createVerticalStrut(15));
             addCompraButton();
             this.add(Box.createVerticalStrut(15));
@@ -239,22 +228,18 @@ public class PanelComprador extends JPanel {
 
     private JLabel loadImage() {
         try {
-            // Cambiar a una ruta relativa dentro del proyecto
-            File imagePath = new File("./expendedorIcon/moneda.png"); // Asegúrate de que el directorio 'resources' está correctamente configurado en tu proyecto
+            File imagePath = new File("./expendedorIcon/moneda.png");
             BufferedImage originalImage = ImageIO.read(imagePath);
-            int width = 100; // Ajusta el ancho deseado de la imagen
-            int height = 100; // Ajusta el alto deseado de la imagen
+            int width = 50;
+            int height = 50;
             Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             ImageIcon icon = new ImageIcon(scaledImage);
-            JLabel label = new JLabel(icon);
-            return label;
-
+            return new JLabel(icon);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JLabel("Error loading image: " + e.getMessage()); // Proporciona detalles del error
+            return new JLabel("Error loading image: " + e.getMessage());
         }
     }
-
 
     private void Producto() {
         JPanel contentPanel = new JPanel();
@@ -271,7 +256,6 @@ public class PanelComprador extends JPanel {
         productosPanel.add(productosLabel);
         productosPanel.add(Box.createVerticalStrut(15));
 
-        // Crear JComboBox para la selección de productos
         String[] productos = {"Ninguno", "Coca Cola", "Fanta", "Sprite", "Super8", "Snickers"};
         comboBox = new JComboBox<>(productos);
         comboBox.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -285,7 +269,6 @@ public class PanelComprador extends JPanel {
         });
 
         productosPanel.add(comboBox);
-
         contentPanel.add(productosPanel);
         add(contentPanel);
     }
@@ -301,38 +284,84 @@ public class PanelComprador extends JPanel {
         compraButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                actualizarProductoSeleccionado(); // Actualizamos el producto
+                actualizarProductoSeleccionado();
                 System.out.println(productoSeleccionado);
+                boolean compraExitosa = false;
+
                 switch (productoSeleccionado) {
                     case "Ninguno":
                         JOptionPane.showMessageDialog(PanelComprador.this, "Por favor, seleccione un producto.");
                         break;
                     case "Coca Cola":
-                        procesarCompra(Precios.COCA_COLA.getPrecio(), "Coca Cola");
+                        if (procesarCompra(Precios.COCA_COLA.getPrecio(), "Coca Cola")) {
+                            if (expendedor.eliminarProducto(CocaCola.class)) {
+                                compraExitosa = true;
+                            } else {
+                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Coca Cola disponible.");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                        }
                         break;
                     case "Sprite":
-                        procesarCompra(Precios.SPRITE.getPrecio(), "Sprite");
+                        if (procesarCompra(Precios.SPRITE.getPrecio(), "Sprite")) {
+                            if (expendedor.eliminarProducto(Sprite.class)) {
+                                compraExitosa = true;
+                            } else {
+                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Sprite disponible.");
+                            }
+                        }else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                        }
                         break;
                     case "Fanta":
-                        procesarCompra(Precios.FANTA.getPrecio(), "Fanta");
+                        if (procesarCompra(Precios.FANTA.getPrecio(), "Fanta")) {
+                            if (expendedor.eliminarProducto(Fanta.class)) {
+                                compraExitosa = true;
+                            } else {
+                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Fanta disponible.");
+                            }
+                        }else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                        }
                         break;
                     case "Super8":
-                        procesarCompra(Precios.SUPER8.getPrecio(), "Super8");
+                        if (procesarCompra(Precios.SUPER8.getPrecio(), "Super8")) {
+                            if (expendedor.eliminarProducto(Super8.class)) {
+                                compraExitosa = true;
+                            } else {
+                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Super8 disponible.");
+                            }
+                        }else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                        }
                         break;
                     case "Snickers":
-                        procesarCompra(Precios.SNICKERS.getPrecio(), "Snickers");
+                        if (procesarCompra(Precios.SNICKERS.getPrecio(), "Snickers")) {
+                            if (expendedor.eliminarProducto(Snickers.class)) {
+                                compraExitosa = true;
+                            } else {
+                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Snickers disponible.");
+                            }
+                        }else {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                        }
                         break;
+                }
+
+                if (compraExitosa) {
+                    panelPrincipal.refreshDisplay();
                 }
             }
         });
 
         add(compraButton);
     }
+
     private boolean removerMonedas(int cantidad) {
         List<Moneda> monedasParaRemover = new ArrayList<>();
         int totalRecolectado = 0;
 
-        // Ordena las monedas de mayor a menor para usar las de mayor valor primero
         monedas.sort((m1, m2) -> m2.getValor() - m1.getValor());
 
         for (Moneda moneda : monedas) {
@@ -352,26 +381,30 @@ public class PanelComprador extends JPanel {
         }
     }
 
-
-    private void procesarCompra(int precioProducto, String producto) {
+    private boolean procesarCompra(int precioProducto, String producto) {
         if (totalMonedas >= precioProducto) {
             if (removerMonedas(precioProducto)) {
                 actualizarTotalMonedas(totalMonedas - precioProducto);
                 JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + producto);
+                return true;
             } else {
-                JOptionPane.showMessageDialog(PanelComprador.this, "Error al procesar la compra.");
+                return false;
             }
         } else {
-            JOptionPane.showMessageDialog(PanelComprador.this, "Lo sentimos eres de bajos recursos.");
+            return false;
         }
     }
 
 
-
+    public void handleMouseEvent(MouseEvent e) {
+        System.out.println("Mouse clicked in PanelComprador at x=" + e.getX() + " y=" + e.getY());
+        if (e.getX() > 100 && e.getX() < 200) {
+            actualizarProductoSeleccionado();
+        }
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        }
     }
-
+}

@@ -1,68 +1,66 @@
 package org.example.gui;
+
 import org.example.model.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import org.example.model.Expendedor;
+import java.awt.event.MouseEvent;
 
 public class PanelExpendedor extends JPanel {
     private Expendedor expendedor;
 
-
     public PanelExpendedor(Expendedor expendedor) {
         this.expendedor = expendedor;
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));  // Usa BoxLayout
-        this.setBackground(new Color(0xFFC4C4)); //Color fondo
-
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBackground(new Color(0xE59F9F));
         Labels();
-
         deposito();
     }
 
     private void Labels() {
         JLabel titulo = new JLabel("Expendedor");
         titulo.setFont(new Font("Cooper Black", Font.PLAIN, 20));
-        titulo.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(titulo);
 
         JLabel coca = new JLabel("Coca Cola: $" + Precios.COCA_COLA.getPrecio());
         coca.setFont(new Font("Arial", Font.PLAIN, 16));
-        coca.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        coca.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(coca);
+
         JLabel sprite = new JLabel("Sprite: $" + Precios.SPRITE.getPrecio());
         sprite.setFont(new Font("Arial", Font.PLAIN, 16));
-        sprite.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        sprite.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(sprite);
+
         JLabel fanta = new JLabel("Fanta: $" + Precios.FANTA.getPrecio());
         fanta.setFont(new Font("Arial", Font.PLAIN, 16));
-        fanta.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        fanta.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(fanta);
+
         JLabel super8 = new JLabel("Super 8: $" + Precios.SUPER8.getPrecio());
         super8.setFont(new Font("Arial", Font.PLAIN, 16));
-        super8.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        super8.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(super8);
+
         JLabel snickers = new JLabel("Snickers: $" + Precios.SNICKERS.getPrecio());
         snickers.setFont(new Font("Arial", Font.PLAIN, 16));
-        snickers.setAlignmentX(Component.LEFT_ALIGNMENT); // Centrar horizontalmente
+        snickers.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(snickers);
+
         this.add(Box.createVerticalStrut(550));
     }
+
     private void deposito() {
         JPanel depositoPanel = new JPanel();
-        depositoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Alinear a la derecha
-        depositoPanel.setBackground(new Color(0x991C35D0)); // Color sólido sin transparencia
-        depositoPanel.setPreferredSize(new Dimension(200, 100)); // Tamaño visible
+        depositoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        depositoPanel.setBackground(new Color(0x991C35D0));
+        depositoPanel.setPreferredSize(new Dimension(200, 100));
 
         JLabel label = new JLabel("Área de Depósito");
         label.setFont(new Font("Arial", Font.BOLD, 16));
         depositoPanel.add(label);
 
-        // Añade el panel deposito al sur del BorderLayout
         this.add(depositoPanel, BorderLayout.SOUTH);
     }
 
@@ -72,34 +70,45 @@ public class PanelExpendedor extends JPanel {
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        int x = 150;
-        int y = 150;
-        int productosPorFila = 5;  // Número de productos por fila
-        int productoActual = 0;
+        int xStart = 150;
+        int yStart = 150;
+        int x = xStart;
+        int y = yStart;
+        int productosPorFila = 5;
+        int espacioVertical = 75;
 
-        for (Deposito<Producto> deposito : expendedor.getProductos()) {
-            for (Producto p : deposito.getAllItems()) {
+        // Dibujar productos por tipo en filas separadas
+        for (int i = 0; i < expendedor.getProductos().size(); i++) {
+            Deposito<Producto> deposito = expendedor.getProductos().get(i);
+            for (int j = 0; j < deposito.getAllItems().size(); j++) {
+                Producto p = deposito.getAllItems().get(j);
                 g.drawImage(p.getImagen(), x, y, 50, 50, this);
-                x += 70;  // Ajusta la posición x para el siguiente producto
-                productoActual++;
+                x += 70;
 
-                // Cambiar a la siguiente fila después de cierto número de productos
-                if (productoActual % productosPorFila == 0) {
-                    x = 150;  // Reinicia la posición x
-                    y += 100;  // Ajusta la posición y para la siguiente fila
+                if ((j + 1) % productosPorFila == 0) {
+                    x = xStart;
+                    y += espacioVertical;
                 }
             }
-            // Después de cada depósito, asegurarse de que se inicie en la siguiente columna
-            if (productoActual % productosPorFila != 0) {
-                x += 70;  // Ajusta la posición x para el siguiente depósito
-                y = 30;  // Reinicia y para el siguiente depósito
-            }
+            // Ajustar para la próxima fila de productos del siguiente tipo
+            yStart += espacioVertical;
+            y = yStart;
+            x = xStart;
         }
 
         // Dibuja el producto comprado si existe
-        if (!expendedor.getDepósitoProductoComprado().isEmpty()) {
-            Producto comprado = expendedor.getDepósitoProductoComprado().peek();
-            g.drawImage(comprado.getImagen(), 300, 300, 60, 50, this);  // Asumiendo que el depósito está en (300, 200)
+        if (!expendedor.getDepositoProductoComprado().isEmpty()) {
+            Producto comprado = expendedor.getDepositoProductoComprado().peek();
+            g.drawImage(comprado.getImagen(), 300, 300, 60, 50, this);
         }
+    }
+
+
+    public void handleMouseEvent(MouseEvent e) {
+        System.out.println("Mouse clicked in PanelExpendedor at: " + e.getX() + ", " + e.getY());
+    }
+
+    public void refreshDisplay() {
+        this.repaint();
     }
 }

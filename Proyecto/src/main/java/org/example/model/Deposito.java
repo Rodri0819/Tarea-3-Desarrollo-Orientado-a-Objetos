@@ -54,4 +54,7 @@ public class Deposito<T> {
         }
         return null; // Retorna null si la lista está vacía.
     }
+    public T remove(int item) {
+        return items.remove(item); // Intenta eliminar el elemento y retorna el resultado de la operación.
+    }
 }

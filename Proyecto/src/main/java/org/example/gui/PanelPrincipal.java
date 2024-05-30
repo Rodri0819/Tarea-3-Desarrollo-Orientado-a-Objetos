@@ -3,15 +3,30 @@ import org.example.model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PanelPrincipal extends JPanel {
     private PanelComprador com;
     private PanelExpendedor exp;
 
     public PanelPrincipal(Expendedor expendedor) {
-
-        com = new PanelComprador(expendedor);
         exp = new PanelExpendedor(expendedor);  // Pasa la instancia de Expendedor
+        com = new PanelComprador(expendedor, this);
+
+        // Añadir MouseListener
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getX() < getWidth() / 2) {
+                    com.handleMouseEvent(e);
+                } else {
+                    exp.handleMouseEvent(e);
+                }
+                repaint();
+            }
+        });
+
         this.setBackground(Color.white);     // Configura el fondo del panel principal
 
         //SE USA GRINDBAGLAYOUT PARA PERSONALIZAR MAS LA DISPERSION DE ESPACIO DEL PANEL PRINCIPAL |
@@ -29,13 +44,17 @@ public class PanelPrincipal extends JPanel {
         gbc.weightx = 0.7;  // El panel expendedor ocupará el 70% del espacio horizontal
         gbc.gridx = 1;  // Segunda columna
         this.add(exp, gbc);  // Añadir el panel del expendedor
-
     }
 
-    public void paintComponent(Graphics g) { // todo se dibuja a partir de este método
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g); //llama al método pint al que hace override en la super clase
         //el de la super clase solo pinta el fondo (background)
         com.paintComponent(g); //llama al metodo paintComponent definido en el PanelComprador
         exp.paintComponent(g); //llama al metodo paintComponent definido en el PanelExpendedor
+    }
+
+    public void refreshDisplay() {
+        this.repaint();
     }
 }
