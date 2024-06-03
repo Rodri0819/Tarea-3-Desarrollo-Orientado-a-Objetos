@@ -2,7 +2,6 @@ package org.example;
 import org.example.model.*;
 import org.example.gui.*;
 
-
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.example.gui.PanelPrincipal;

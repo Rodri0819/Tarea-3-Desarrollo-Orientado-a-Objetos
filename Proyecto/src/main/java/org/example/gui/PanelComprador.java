@@ -74,25 +74,23 @@ public class PanelComprador extends JPanel {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
         contentPanel.setBackground(new Color(0xDBB2FF));
 
-        JPanel monedasPanel = new JPanel();
-        monedasPanel.setLayout(new BoxLayout(monedasPanel, BoxLayout.Y_AXIS));
-        monedasPanel.setBackground(new Color(0xDBB2FF));
-        monedasPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(new Color(0xDBB2FF));
+        contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel monedasLabel = new JLabel("Añadir Monedas:");
         monedasLabel.setFont(new Font("Arial", Font.BOLD, 16));
         monedasLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        monedasPanel.add(monedasLabel);
+        contentPanel.add(monedasLabel);
 
         // Añade botones al monedasPanel
-        monedasPanel.add(createMonedaButton("$100"));
-        monedasPanel.add(createMonedaButton("$500"));
-        monedasPanel.add(createMonedaButton("$1000"));
-        monedasPanel.add(createMonedaButton("$1500"));
+        contentPanel.add(createMonedaButton("$100"));
+        contentPanel.add(createMonedaButton("$500"));
+        contentPanel.add(createMonedaButton("$1000"));
+        contentPanel.add(createMonedaButton("$1500"));
+        GuardarMonedas();
 
-        JLabel imageLabel = loadImage();
-        contentPanel.add(imageLabel);
-        contentPanel.add(monedasPanel);
         add(contentPanel);
     }
 
@@ -183,21 +181,21 @@ public class PanelComprador extends JPanel {
     }
 
     private void GuardarMonedas() {
-        JButton guardar = new JButton("Depositar monedas");
-        guardar.setFont(new Font("Arial", Font.BOLD, 20));
-        guardar.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        guardar.setBorder(BorderFactory.createRaisedBevelBorder());
-        guardar.setBackground(new Color(0x60AB90));
-        guardar.setForeground(Color.WHITE);
+        JButton ingresar = new JButton("Ingresar");
+        ingresar.setFont(new Font("Arial", Font.BOLD, 18));
+        ingresar.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        ingresar.setBorder(BorderFactory.createRaisedBevelBorder());
+        ingresar.setBackground(new Color(0x60AB90));
+        ingresar.setForeground(Color.WHITE);
 
-        guardar.addActionListener(new ActionListener() {
+        ingresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 temp = 0;
                 actualizarPantalla();
             }
         });
-        contentPanel.add(guardar);
+        contentPanel.add(ingresar);
     }
 
     private void actualizarMonedasPanel() {
@@ -212,8 +210,6 @@ public class PanelComprador extends JPanel {
     public void actualizarPantalla() {
         if (temp == 1) {
             Monedas();
-            this.add(Box.createVerticalStrut(15));
-            GuardarMonedas();
             this.add(Box.createVerticalStrut(15));
             repaint();
         } else {

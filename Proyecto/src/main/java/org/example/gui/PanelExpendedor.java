@@ -88,12 +88,12 @@ public class PanelExpendedor extends JPanel {
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        int xStart = 150;
+        int xStart = 70;
         int yStart = 150;
         int x = xStart;
         int y = yStart;
-        int productosPorFila = 5;
-        int espacioVertical = 75;
+        int productosPorFila = 8;
+        int espacioVertical = 60;
 
         // Dibujar productos por tipo en filas separadas
         for (int i = 0; i < expendedor.getProductos().size(); i++) {
@@ -125,18 +125,6 @@ public class PanelExpendedor extends JPanel {
         tituloDeposito.setFont(new Font("Arial", Font.BOLD, 16));
         depositoPanel.add(tituloDeposito);
 
-        // Creación de un nuevo sub-panel dentro de depositoPanel
-        JPanel subPanelVuelto = new JPanel();
-        subPanelVuelto.setLayout(new FlowLayout(FlowLayout.CENTER));
-        subPanelVuelto.setBackground(new Color(0xFFFFFF)); // Color para diferenciarlo
-        subPanelVuelto.setPreferredSize(new Dimension(180, 80));
-        // Añadir componentes al subPanelVuelto
-        JLabel subLabel = new JLabel("Vuelto: ");
-        subLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        subPanelVuelto.add(subLabel);
-        // Añadir el subPanelVuelto a depositoPanel
-        depositoPanel.add(subPanelVuelto);
-
         this.add(depositoPanel, BorderLayout.SOUTH);
     }
 
@@ -164,11 +152,16 @@ public class PanelExpendedor extends JPanel {
         subPanelVuelto.setLayout(new FlowLayout(FlowLayout.CENTER));
         subPanelVuelto.setBackground(new Color(0xFFFFFF)); // Color para diferenciarlo
         subPanelVuelto.setPreferredSize(new Dimension(180, 80));
-
         // Añadir componentes al subPanelVuelto
-        JLabel subLabel = new JLabel("Vuelto: " +  expendedor.getVuelto()*100);
+        JLabel subLabel = new JLabel("Vuelto: $" +  expendedor.getVuelto()*100);
         subLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         subPanelVuelto.add(subLabel);
+
+        for (int i = 0; i < expendedor.getVuelto(); i++) {
+
+        }
+
+
 
         // Añadir el subPanelVuelto a depositoPanel
         depositoPanel.add(subPanelVuelto);
