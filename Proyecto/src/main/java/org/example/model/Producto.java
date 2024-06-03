@@ -14,7 +14,7 @@ public abstract class Producto {
     private int codigo;   // Código identificador del producto.
     private String nombre; // Nombre del producto.
     private int precio;   // Precio del producto
-    private Image imagen;  // I magen del producto
+    private Image imagen;  // Imagen del producto
 
 
     /**

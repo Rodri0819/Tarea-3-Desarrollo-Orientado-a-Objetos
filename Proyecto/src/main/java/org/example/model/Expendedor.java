@@ -13,6 +13,7 @@ public class Expendedor {
     private Deposito<Moneda> monedaVueltas;
     private List<Deposito<Producto>> productos;
     private Deposito<Producto> depositoProductoComprado;
+    private List<Producto> productosEliminadosTemporalmente = new ArrayList<>();
 
     public Expendedor(int numProductos) {
         productos = new ArrayList<>();
@@ -27,31 +28,24 @@ public class Expendedor {
             productos.get(COCA - 1).add(new CocaCola(i, "CocaCola", Precios.COCA_COLA.getPrecio(), "CocaCola"));
             productos.get(SPRITE - 1).add(new Sprite(i, "Sprite", Precios.SPRITE.getPrecio(), "Sprite"));
             productos.get(FANTA - 1).add(new Fanta(i, "Fanta", Precios.FANTA.getPrecio(), "Fanta"));
-            productos.get(SUPER8 - 1).add(new Super8(i,"Super8",Precios.SUPER8.getPrecio(),"Chocolate"));
-            productos.get(SNICKERS - 1).add(new Snickers(i,"Snickers",Precios.SNICKERS.getPrecio(),"Snicker"));
+            productos.get(SUPER8 - 1).add(new Super8(i, "Super8", Precios.SUPER8.getPrecio(), "Chocolate"));
+            productos.get(SNICKERS - 1).add(new Snickers(i, "Snickers", Precios.SNICKERS.getPrecio(), "Snicker"));
         }
     }
 
-    public boolean eliminarProducto(Class<? extends Producto> tipoProducto) {
-        for (Deposito<Producto> deposito : productos) {
-            for (int i = 0; i < deposito.size(); i++) {
-                Producto producto = deposito.getAllItems().get(i);
-                if (tipoProducto.isInstance(producto)) {
-                    deposito.remove(i);
-                    return true;
-                }
-            }
-        }
-        return false;
+    public void productoComprado(Producto producto) {
+        depositoProductoComprado.add(producto);
     }
 
-    public Producto comprarProducto(Moneda m, int cual) throws PagoIncorrectoException, NoHayProductoException, PagoInsuficienteException {
+
+    public void comprarProducto(Moneda m, String nombreProducto) throws PagoIncorrectoException, NoHayProductoException, PagoInsuficienteException {
         if (m == null) {
             throw new PagoIncorrectoException("La moneda no puede ser nula");
         }
 
-        if (cual < COCA || cual > SNICKERS) {
-            throw new NoHayProductoException("Número de producto incorrecto o producto no disponible");
+        int cual = obtenerIndiceProducto(nombreProducto);
+        if (cual == -1) {
+            throw new NoHayProductoException("Producto no disponible");
         }
 
         int precioProducto = Precios.values()[cual - 1].getPrecio();
@@ -72,13 +66,35 @@ public class Expendedor {
             cambio -= 100;
         }
 
-        Producto productoComprado = depositoProducto.get();
-        depositoProductoComprado.add(productoComprado);
-        return productoComprado;
+        Producto productoComprado = depositoProducto.get(); // Obtener y eliminar el producto del depósito
+        productoComprado(productoComprado); // Registrar el producto comprado
+        System.out.println("Producto comprado y añadido al depósito de productos comprados: " + productoComprado.getNombre());
     }
 
-    public Moneda getVuelto() {
-        return monedaVueltas.get();
+
+    private int obtenerIndiceProducto(String nombreProducto) {
+        switch (nombreProducto) {
+            case "Coca Cola":
+                return COCA;
+            case "Sprite":
+                return SPRITE;
+            case "Fanta":
+                return FANTA;
+            case "Super8":
+                return SUPER8;
+            case "Snickers":
+                return SNICKERS;
+            default:
+                return -1;
+        }
+    }
+
+    public int getVuelto() {
+        return monedaVueltas.size();
+    }
+
+    public Producto getProducto() {
+        return depositoProductoComprado.get();
     }
 
     public List<Deposito<Producto>> getProductos() {
@@ -87,5 +103,9 @@ public class Expendedor {
 
     public Deposito<Producto> getDepositoProductoComprado() {
         return depositoProductoComprado;
+    }
+
+    public List<Producto> getProductosEliminadosTemporalmente() {
+        return new ArrayList<>(productosEliminadosTemporalmente);
     }
 }

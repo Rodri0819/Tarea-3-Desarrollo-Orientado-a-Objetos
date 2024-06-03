@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class PanelComprador extends JPanel {
     private PanelPrincipal panelPrincipal;
+    private PanelExpendedor panelExpendedor;
     private List<Moneda> monedas = new ArrayList<>();
     private JPanel monedasPanel, contentPanel; // Mover contentPanel a nivel de clase
     private JLabel productoSeleccionadoLabel; // Declaración de etiquetas
@@ -284,85 +285,74 @@ public class PanelComprador extends JPanel {
         compraButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Verificar si ya hay un producto en el depósito de productos comprados
+                if (!expendedor.getDepositoProductoComprado().isEmpty()) {
+                    JOptionPane.showMessageDialog(PanelComprador.this, "El depósito ya contiene un producto. Recógelo antes de comprar otro.");
+                    return;
+                }
+
                 actualizarProductoSeleccionado();
                 System.out.println(productoSeleccionado);
                 boolean compraExitosa = false;
+                int precioProductoSeleccionado;
 
                 switch (productoSeleccionado) {
                     case "Ninguno":
                         JOptionPane.showMessageDialog(PanelComprador.this, "Por favor, seleccione un producto.");
                         break;
                     case "Coca Cola":
+                        precioProductoSeleccionado = Precios.COCA_COLA.getPrecio();
                         if (procesarCompra(Precios.COCA_COLA.getPrecio(), "Coca Cola")) {
-                            if (expendedor.eliminarProducto(CocaCola.class)) {
-                                compraExitosa = true;
-                            } else {
-                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Coca Cola disponible.");
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                            compraExitosa = true;
                         }
                         break;
                     case "Sprite":
+                        precioProductoSeleccionado = Precios.SPRITE.getPrecio();
                         if (procesarCompra(Precios.SPRITE.getPrecio(), "Sprite")) {
-                            if (expendedor.eliminarProducto(Sprite.class)) {
-                                compraExitosa = true;
-                            } else {
-                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Sprite disponible.");
-                            }
-                        }else {
-                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                            compraExitosa = true;
                         }
                         break;
                     case "Fanta":
+                        precioProductoSeleccionado = Precios.FANTA.getPrecio();
                         if (procesarCompra(Precios.FANTA.getPrecio(), "Fanta")) {
-                            if (expendedor.eliminarProducto(Fanta.class)) {
-                                compraExitosa = true;
-                            } else {
-                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Fanta disponible.");
-                            }
-                        }else {
-                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                            compraExitosa = true;
                         }
                         break;
                     case "Super8":
+                        precioProductoSeleccionado = Precios.SUPER8.getPrecio();
                         if (procesarCompra(Precios.SUPER8.getPrecio(), "Super8")) {
-                            if (expendedor.eliminarProducto(Super8.class)) {
-                                compraExitosa = true;
-                            } else {
-                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Super8 disponible.");
-                            }
-                        }else {
-                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                            compraExitosa = true;
                         }
                         break;
                     case "Snickers":
+                        precioProductoSeleccionado = Precios.SNICKERS.getPrecio();
                         if (procesarCompra(Precios.SNICKERS.getPrecio(), "Snickers")) {
-                            if (expendedor.eliminarProducto(Snickers.class)) {
-                                compraExitosa = true;
-                            } else {
-                                JOptionPane.showMessageDialog(PanelComprador.this, "No hay Snickers disponible.");
-                            }
-                        }else {
-                            JOptionPane.showMessageDialog(PanelComprador.this, "Eres de bajos recursos no te alcanza");
+                            compraExitosa = true;
                         }
                         break;
                 }
 
                 if (compraExitosa) {
                     panelPrincipal.refreshDisplay();
-                }
+                    actualizarMonedasPanel();
+                    } else if (!productoSeleccionado.equals("Ninguno")) {
+                        if (Precios.SNICKERS.getPrecio()>(totalMonedas - expendedor.getVuelto()*100)) {
+                            JOptionPane.showMessageDialog(PanelComprador.this, "No tienes monedas");
+                        }
+                    }
             }
         });
 
         add(compraButton);
     }
 
-    private boolean removerMonedas(int cantidad) {
+
+    private List<Moneda> removerMonedas(int cantidad) {
         List<Moneda> monedasParaRemover = new ArrayList<>();
         int totalRecolectado = 0;
 
-        monedas.sort((m1, m2) -> m2.getValor() - m1.getValor());
+        // Ordena las monedas de mayor a menor valor para usar la menor cantidad de monedas posible.
+        monedas.sort((m1, m2) -> Integer.compare(m2.getValor(), m1.getValor()));
 
         for (Moneda moneda : monedas) {
             monedasParaRemover.add(moneda);
@@ -374,20 +364,23 @@ public class PanelComprador extends JPanel {
 
         if (totalRecolectado >= cantidad) {
             monedas.removeAll(monedasParaRemover);
-            actualizarMonedasPanel();
-            return true;
+            return monedasParaRemover; // Devuelve todas las monedas utilizadas en la compra.
         } else {
-            return false;
+            return null; // No se encontraron monedas suficientes.
         }
     }
 
     private boolean procesarCompra(int precioProducto, String producto) {
-        if (totalMonedas >= precioProducto) {
-            if (removerMonedas(precioProducto)) {
+        List<Moneda> monedasUsadas = removerMonedas(precioProducto);
+        if (monedasUsadas != null) {
+            try {
+                expendedor.comprarProducto(monedasUsadas.get(0), producto);
                 actualizarTotalMonedas(totalMonedas - precioProducto);
                 JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + producto);
                 return true;
-            } else {
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al comprar: " + e.getMessage());
+                monedas.addAll(monedasUsadas);
                 return false;
             }
         } else {

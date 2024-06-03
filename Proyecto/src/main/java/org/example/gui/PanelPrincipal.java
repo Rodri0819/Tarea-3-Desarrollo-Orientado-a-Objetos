@@ -48,13 +48,17 @@ public class PanelPrincipal extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); //llama al método pint al que hace override en la super clase
+        super.paintComponent(g); //llama al método paint al que hace override en la super clase
         //el de la super clase solo pinta el fondo (background)
         com.paintComponent(g); //llama al metodo paintComponent definido en el PanelComprador
         exp.paintComponent(g); //llama al metodo paintComponent definido en el PanelExpendedor
     }
+    public PanelExpendedor getPanelExpendedor() {
+        return exp;
+    }
 
     public void refreshDisplay() {
+        exp.refreshDeposito(); // Asegúrate de que este método existe y hace lo que necesitas
         this.repaint();
     }
 }
