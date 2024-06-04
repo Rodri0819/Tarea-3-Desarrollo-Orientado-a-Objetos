@@ -12,10 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PanelComprador extends JPanel {
     private PanelPrincipal panelPrincipal;
-    private PanelExpendedor panelExpendedor;
     private List<Moneda> monedas = new ArrayList<>();
     private JPanel monedasPanel, contentPanel; // Mover contentPanel a nivel de clase
     private JLabel productoSeleccionadoLabel; // Declaración de etiquetas
@@ -25,6 +25,7 @@ public class PanelComprador extends JPanel {
     private int totalMonedas = 0; // Almacenar el total de monedas
     private Expendedor expendedor;
     int temp = 1;
+    private List<Moneda> listaMonedas = new ArrayList<>();
 
     public PanelComprador(Expendedor expendedor, PanelPrincipal panelPrincipal) {
         this.expendedor = expendedor;
@@ -52,7 +53,7 @@ public class PanelComprador extends JPanel {
         add(productoSeleccionadoLabel);
         this.add(Box.createVerticalStrut(5));
 
-        totalMonedasLabel = new JLabel("Total Monedas: $0");
+        totalMonedasLabel = new JLabel("Tus Monedas: $0");
         totalMonedasLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         totalMonedasLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(totalMonedasLabel);
@@ -66,7 +67,7 @@ public class PanelComprador extends JPanel {
 
     public void actualizarTotalMonedas(int total) {
         totalMonedas = total; // Actualizar el total de monedas
-        totalMonedasLabel.setText("Total Monedas $" + totalMonedas);
+        totalMonedasLabel.setText("Tus Monedas: $" + totalMonedas);
     }
 
     private void Monedas() {
@@ -117,27 +118,13 @@ public class PanelComprador extends JPanel {
     }
 
     private void addMonedaToPanel(Moneda nuevaMoneda) {
-        JPanel monedaPanel = new JPanel();
-        monedaPanel.setLayout(new BoxLayout(monedaPanel, BoxLayout.X_AXIS));
-        monedaPanel.setBackground(new Color(0xDBB2FF));
+        // Agregar la nueva moneda a la lista
+        listaMonedas.add(nuevaMoneda);
 
-        JLabel label = new JLabel("Moneda $" + nuevaMoneda.getValor());
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-
-        try {
-            BufferedImage monedaImage = ImageIO.read(new File(nuevaMoneda.getImagenPath()));
-            ImageIcon monedaIcon = new ImageIcon(monedaImage.getScaledInstance(30, 30, Image.SCALE_SMOOTH));
-            JLabel monedaLabel = new JLabel(monedaIcon);
-            monedaPanel.add(monedaLabel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        monedaPanel.add(label);
-        monedasPanel.add(monedaPanel);
-        monedasPanel.revalidate();
-        monedasPanel.repaint();
+        // Actualizar el panel de monedas
+        actualizarMonedasPanel();
     }
+
 
     private JButton createMonedaButton(String valor) {
         JButton button = new JButton(valor);
@@ -199,13 +186,39 @@ public class PanelComprador extends JPanel {
     }
 
     private void actualizarMonedasPanel() {
+        // Ordenar la lista de monedas por su valor de mayor a menor
+        listaMonedas.sort((m1, m2) -> Integer.compare(m2.getValor(), m1.getValor()));
+
+        // Limpiar el panel actual
         monedasPanel.removeAll();
-        for (Moneda moneda : monedas) {
-            addMonedaToPanel(moneda);
+
+        // Volver a agregar todas las monedas ordenadas al panel
+        for (Moneda moneda : listaMonedas) {
+            JPanel monedaPanel = new JPanel();
+            monedaPanel.setLayout(new BoxLayout(monedaPanel, BoxLayout.X_AXIS));
+            monedaPanel.setBackground(new Color(0xDBB2FF));
+
+            JLabel label = new JLabel("Moneda $" + moneda.getValor());
+            label.setFont(new Font("Arial", Font.BOLD, 16));
+
+            try {
+                BufferedImage monedaImage = ImageIO.read(new File(moneda.getImagenPath()));
+                ImageIcon monedaIcon = new ImageIcon(monedaImage.getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+                JLabel monedaLabel = new JLabel(monedaIcon);
+                monedaPanel.add(monedaLabel);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            monedaPanel.add(label);
+            monedasPanel.add(monedaPanel);
         }
+
+        // Actualizar el panel
         monedasPanel.revalidate();
         monedasPanel.repaint();
     }
+
 
     public void actualizarPantalla() {
         if (temp == 1) {
@@ -331,11 +344,11 @@ public class PanelComprador extends JPanel {
                 if (compraExitosa) {
                     panelPrincipal.refreshDisplay();
                     actualizarMonedasPanel();
-                    } else if (!productoSeleccionado.equals("Ninguno")) {
-                        if (Precios.SNICKERS.getPrecio()>(totalMonedas - expendedor.getVuelto()*100)) {
-                            JOptionPane.showMessageDialog(PanelComprador.this, "No tienes monedas");
-                        }
+                } else if (!productoSeleccionado.equals("Ninguno")) {
+                    if (Precios.SNICKERS.getPrecio() > (totalMonedas - expendedor.getVuelto() * 100)) {
+                        JOptionPane.showMessageDialog(PanelComprador.this, "No tienes monedas");
                     }
+                }
             }
         });
 
@@ -343,14 +356,15 @@ public class PanelComprador extends JPanel {
     }
 
 
+
     private List<Moneda> removerMonedas(int cantidad) {
         List<Moneda> monedasParaRemover = new ArrayList<>();
         int totalRecolectado = 0;
 
         // Ordena las monedas de mayor a menor valor para usar la menor cantidad de monedas posible.
-        monedas.sort((m1, m2) -> Integer.compare(m2.getValor(), m1.getValor()));
+        listaMonedas.sort((m1, m2) -> Integer.compare(m2.getValor(), m1.getValor()));
 
-        for (Moneda moneda : monedas) {
+        for (Moneda moneda : listaMonedas) {
             monedasParaRemover.add(moneda);
             totalRecolectado += moneda.getValor();
             if (totalRecolectado >= cantidad) {
@@ -359,7 +373,7 @@ public class PanelComprador extends JPanel {
         }
 
         if (totalRecolectado >= cantidad) {
-            monedas.removeAll(monedasParaRemover);
+            listaMonedas.removeAll(monedasParaRemover);
             return monedasParaRemover; // Devuelve todas las monedas utilizadas en la compra.
         } else {
             return null; // No se encontraron monedas suficientes.
@@ -371,7 +385,7 @@ public class PanelComprador extends JPanel {
         if (monedasUsadas != null) {
             try {
                 expendedor.comprarProducto(monedasUsadas.get(0), producto);
-                actualizarTotalMonedas(totalMonedas - precioProducto);
+                actualizarTotalMonedas(totalMonedas - monedasUsadas.get(0).getValor());
                 JOptionPane.showMessageDialog(PanelComprador.this, "Compra realizada: " + producto);
                 return true;
             } catch (Exception e) {

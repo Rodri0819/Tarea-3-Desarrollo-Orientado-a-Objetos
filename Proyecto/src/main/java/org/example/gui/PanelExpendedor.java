@@ -2,26 +2,45 @@ package org.example.gui;
 
 import org.example.model.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
 
 public class PanelExpendedor extends JPanel {
     private Expendedor expendedor;
     private JPanel depositoPanel;
     private JButton recogerProductoButton;
+    private Image backgroundImage;
+    int vuelto = 0;
+
+
+    {
+        try {
+            backgroundImage = ImageIO.read(new File("expendedorIcon/expendedora2.png"));
+        } catch (IOException e) {
+            System.err.println("Error al cargar la imagen: " + e.getMessage());
+            backgroundImage = null;
+        }
+    }
 
     public PanelExpendedor(Expendedor expendedor) {
         this.expendedor = expendedor;
+        this.setPreferredSize(new Dimension(200, 600)); // Ajusta esto según el tamaño de tu imagen o necesidades.
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(new Color(0xE59F9F));
-        Labels();
+        this.add(Box.createVerticalStrut(20));
+        Label();
+        this.add(Box.createVerticalStrut(592));
         setupUI();
         deposito();
 
-        // Agregar MouseListener para rellenar los depósitos vacíos
+
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -30,49 +49,39 @@ public class PanelExpendedor extends JPanel {
         });
     }
 
-    private void Labels() {
+    private void loadImage(String imagePath) {
+        ImageIcon icon = new ImageIcon(imagePath);
+        backgroundImage = icon.getImage();
+    }
+
+    private void Label() {
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+        titlePanel.setOpaque(false);
+
         JLabel titulo = new JLabel("Expendedor");
         titulo.setFont(new Font("Cooper Black", Font.PLAIN, 20));
-        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(titulo);
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titulo.setOpaque(false);
 
-        JLabel coca = new JLabel("Coca Cola: $" + Precios.COCA_COLA.getPrecio());
-        coca.setFont(new Font("Arial", Font.PLAIN, 16));
-        coca.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(coca);
 
-        JLabel sprite = new JLabel("Sprite: $" + Precios.SPRITE.getPrecio());
-        sprite.setFont(new Font("Arial", Font.PLAIN, 16));
-        sprite.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(sprite);
+        titlePanel.add(Box.createHorizontalGlue());
+        titlePanel.add(titulo);
+        titlePanel.add(Box.createHorizontalGlue());
 
-        JLabel fanta = new JLabel("Fanta: $" + Precios.FANTA.getPrecio());
-        fanta.setFont(new Font("Arial", Font.PLAIN, 16));
-        fanta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(fanta);
-
-        JLabel super8 = new JLabel("Super 8: $" + Precios.SUPER8.getPrecio());
-        super8.setFont(new Font("Arial", Font.PLAIN, 16));
-        super8.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(super8);
-
-        JLabel snickers = new JLabel("Snickers: $" + Precios.SNICKERS.getPrecio());
-        snickers.setFont(new Font("Arial", Font.PLAIN, 16));
-        snickers.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(snickers);
-
-        this.add(Box.createVerticalStrut(550));
+        this.add(titlePanel);
     }
 
     private void setupUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        recogerProductoButton = new JButton("Recoger Producto");
+        recogerProductoButton = new JButton("Recoger Producto y Vuelto");
         recogerProductoButton.addActionListener(e -> {
             Producto productoRecogido = expendedor.getProducto();
             if (productoRecogido != null) {
                 JOptionPane.showMessageDialog(null, "Has recogido: " + productoRecogido.getNombre());
-                // Aquí puedes agregar cualquier lógica adicional como actualizar el estado del depósito visualmente.
+
+                depositoPanel.removeAll();
                 repaint();
             } else {
                 JOptionPane.showMessageDialog(null, "No hay producto para recoger.");
@@ -82,47 +91,16 @@ public class PanelExpendedor extends JPanel {
         add(recogerProductoButton);
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-        int xStart = 70;
-        int yStart = 150;
-        int x = xStart;
-        int y = yStart;
-        int productosPorFila = 8;
-        int espacioVertical = 60;
-
-        // Dibujar productos por tipo en filas separadas
-        for (int i = 0; i < expendedor.getProductos().size(); i++) {
-            Deposito<Producto> deposito = expendedor.getProductos().get(i);
-            for (int j = 0; j < deposito.getAllItems().size(); j++) {
-                Producto p = deposito.getAllItems().get(j);
-                g.drawImage(p.getImagen(), x, y, 50, 50, this);
-                x += 70;
-
-                if ((j + 1) % productosPorFila == 0) {
-                    x = xStart;
-                    y += espacioVertical;
-                }
-            }
-            // Ajustar para la próxima fila de productos del siguiente tipo
-            yStart += espacioVertical;
-            y = yStart;
-            x = xStart;
-        }
-    }
 
     private void deposito() {
         depositoPanel = new JPanel();
         depositoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        depositoPanel.setBackground(new Color(0x991C35D0));
+        depositoPanel.setBackground(new Color(0x01C35D0, true));
         depositoPanel.setPreferredSize(new Dimension(200, 100));
 
-        JLabel tituloDeposito = new JLabel("Área de Depósito");
-        tituloDeposito.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel tituloDeposito = new JLabel("Depósito                                                        ");
+        tituloDeposito.setFont(new Font("Arial", Font.BOLD, 18));
+        tituloDeposito.setForeground(Color.WHITE);
         depositoPanel.add(tituloDeposito);
 
         this.add(depositoPanel, BorderLayout.SOUTH);
@@ -130,16 +108,18 @@ public class PanelExpendedor extends JPanel {
 
     public void refreshDeposito() {
         if (!expendedor.getDepositoProductoComprado().isEmpty()) {
-            depositoPanel.removeAll(); // Limpia el panel antes de agregar elementos actualizados
+            depositoPanel.removeAll();
 
-            JLabel tituloDeposito = new JLabel("Área de Depósito");
-            tituloDeposito.setFont(new Font("Arial", Font.BOLD, 16));
+            JLabel tituloDeposito = new JLabel("Depósito");
+            tituloDeposito.setFont(new Font("Arial", Font.BOLD, 14));
+            tituloDeposito.setAlignmentY(Component.TOP_ALIGNMENT);
+            tituloDeposito.setForeground(Color.WHITE);
             depositoPanel.add(tituloDeposito);
 
             Producto comprado = expendedor.getDepositoProductoComprado().peek(); // Añade los productos comprados recientemente al panel
             ImageIcon imageIcon = new ImageIcon(comprado.getImagen()); // Camino al archivo
 
-            // Crear el JLabel con el ImageIcon
+
             JLabel imageLabel = new JLabel(imageIcon);
             depositoPanel.add(imageLabel);
 
@@ -149,36 +129,39 @@ public class PanelExpendedor extends JPanel {
 
         // Creación de un nuevo sub-panel dentro de depositoPanel
         JPanel subPanelVuelto = new JPanel();
-        subPanelVuelto.setLayout(new FlowLayout(FlowLayout.CENTER));
-        subPanelVuelto.setBackground(new Color(0xFFFFFF)); // Color para diferenciarlo
-        subPanelVuelto.setPreferredSize(new Dimension(180, 80));
+        subPanelVuelto.setLayout(new FlowLayout(FlowLayout.CENTER, -20, 0));
+        subPanelVuelto.setBackground(new Color(0x0484848, true)); // Color para diferenciarlo
+        subPanelVuelto.setPreferredSize(new Dimension(500, 80));
+
         // Añadir componentes al subPanelVuelto
-        JLabel subLabel = new JLabel("Vuelto: $" +  expendedor.getVuelto()*100);
-        subLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+
+
+        vuelto = expendedor.getVuelto() - vuelto;
+        JLabel subLabel = new JLabel("$" +  vuelto*100 + "      ");
+        subLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        subLabel.setForeground(Color.WHITE);
         subPanelVuelto.add(subLabel);
 
-        for (int i = 0; i < expendedor.getVuelto(); i++) {
-
+        for (int i = 0; i < vuelto; i++) {
+            // Crear el JLabel y establecer la imagen como ícono
+            JLabel labelMoneda = new JLabel(new ImageIcon("expendedorIcon/moneda2.png"));
+            subPanelVuelto.add(labelMoneda);
         }
-
-
-
-        // Añadir el subPanelVuelto a depositoPanel
+        vuelto = expendedor.getVuelto();
         depositoPanel.add(subPanelVuelto);
-
         depositoPanel.revalidate();
         depositoPanel.repaint();
     }
 
     public void handleMouseEvent(MouseEvent e) {
-        rellenarDepositos();
+        rellenarDepositos(expendedor.getNumProductos());
     }
 
-    private void rellenarDepositos() {
+    private void rellenarDepositos(int numProductos) {
         List<Deposito<Producto>> depositos = expendedor.getProductos();
         for (int i = 0; i < depositos.size(); i++) {
             Deposito<Producto> deposito = depositos.get(i);
-            while (deposito.size() < 5) {
+            while (deposito.size() < numProductos) {
                 switch (i) {
                     case Expendedor.COCA - 1:
                         deposito.add(new CocaCola(deposito.size(), "CocaCola", Precios.COCA_COLA.getPrecio(), "CocaCola"));
@@ -199,5 +182,56 @@ public class PanelExpendedor extends JPanel {
             }
         }
         repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        } else {
+            System.out.println("No hay imagen para mostrar.");
+        }
+
+        int xStart = 60;
+        int yStart = 85;
+        int x = xStart;
+        int y = yStart;
+        int productosPorFila = 8;
+        int espacioVertical = 119;
+        int espacioPrecio = 20;
+
+        Font precioFont = new Font("Arial", Font.BOLD, 14);
+        g.setFont(precioFont);
+        Color precioColor = Color.BLACK;
+        g.setColor(precioColor);
+
+        for (int i = 0; i < expendedor.getProductos().size(); i++) {
+            Deposito<Producto> deposito = expendedor.getProductos().get(i);
+            for (int j = 0; j < deposito.getAllItems().size(); j++) {
+
+                Producto p = deposito.getAllItems().get(j);
+
+                g.drawImage(p.getImagen(), x, y, 50, 50, this);
+
+                String precio = "$" + p.getPrecio();
+                int precioX = x + (50 - g.getFontMetrics().stringWidth(precio)) / 2;
+                int precioY = y + 50 + espacioPrecio;
+                g.drawString(precio, precioX, precioY);
+                x += 70;
+
+                if ((j + 1) % productosPorFila == 0) {
+                    x = xStart;
+                    y += espacioVertical;
+                }
+            }
+
+            yStart += espacioVertical;
+            y = yStart;
+            x = xStart;
+        }
+
     }
 }

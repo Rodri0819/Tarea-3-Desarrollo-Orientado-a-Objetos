@@ -9,6 +9,7 @@ public class Expendedor {
     public static final int FANTA = 3;
     public static final int SUPER8 = 4;
     public static final int SNICKERS = 5;
+    int numProductos;
 
     private Deposito<Moneda> monedaVueltas;
     private List<Deposito<Producto>> productos;
@@ -19,6 +20,7 @@ public class Expendedor {
         productos = new ArrayList<>();
         monedaVueltas = new Deposito<>();
         depositoProductoComprado = new Deposito<>();
+        this.numProductos = numProductos;
 
         for (int i = 0; i < 5; i++) {
             productos.add(new Deposito<>());
@@ -103,6 +105,10 @@ public class Expendedor {
 
     public Deposito<Producto> getDepositoProductoComprado() {
         return depositoProductoComprado;
+    }
+
+    public int getNumProductos() {
+        return numProductos;
     }
 
     public List<Producto> getProductosEliminadosTemporalmente() {
