@@ -6,18 +6,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.List;
 
 public class PanelComprador extends JPanel {
     private PanelPrincipal panelPrincipal;
     private List<Moneda> monedas = new ArrayList<>();
-    private JPanel monedasPanel, contentPanel; // Mover contentPanel a nivel de clase
+    private JPanel monedasPanel, contentPanel, añadirmonedas, mainPanel; // Mover contentPanel a nivel de clase
     private JLabel productoSeleccionadoLabel; // Declaración de etiquetas
     private JLabel totalMonedasLabel;
     private String productoSeleccionado = "Ninguno"; // Almacenar el producto seleccionado
@@ -70,29 +70,62 @@ public class PanelComprador extends JPanel {
         totalMonedasLabel.setText("Tus Monedas: $" + totalMonedas);
     }
 
+    public void agregarVuelto(List<Moneda> vueltoMonedas) {
+        for (Moneda moneda : vueltoMonedas) {
+            totalMonedas += moneda.getValor(); // Agregar el valor de cada moneda al total
+            monedas.add(moneda); // Añadir cada moneda a la lista de monedas
+            addMonedaToPanel(moneda); // Añadir la moneda al panel
+        }
+        totalMonedasLabel.setText("Tus Monedas: $" + totalMonedas);
+
+        // Actualizar el panel
+        monedasPanel.revalidate();
+        monedasPanel.repaint();
+    }
+
     private void Monedas() {
+        añadirmonedas = new JPanel();
+        añadirmonedas.setLayout(new BoxLayout(añadirmonedas, BoxLayout.Y_AXIS));
+        añadirmonedas.setOpaque(false);
+
+        // Etiqueta "Añadir Monedas" al principio
+        JLabel monedasLabel = new JLabel("Añadir Monedas:");
+        monedasLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        monedasLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        añadirmonedas.add(monedasLabel);
+        añadirmonedas.add(Box.createVerticalStrut(10));
+
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.setOpaque(false);
+
         contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
-        contentPanel.setBackground(new Color(0xDBB2FF));
-
-
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(new Color(0xDBB2FF));
+        contentPanel.setBackground(new Color(0xDBB2FF, true));
+        contentPanel.setOpaque(false);
         contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel monedasLabel = new JLabel("Añadir Monedas:");
-        monedasLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        monedasLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(monedasLabel);
+        // Cargar y mostrar la imagen de la moneda
+        ImageIcon imageIcon = loadImage();
+        JLabel imageLabel = new JLabel(imageIcon);
+        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 15));  // Añade un margen explícito alrededor de la imagen
+        mainPanel.add(imageLabel);
 
-        // Añade botones al monedasPanel
         contentPanel.add(createMonedaButton("$100"));
         contentPanel.add(createMonedaButton("$500"));
         contentPanel.add(createMonedaButton("$1000"));
         contentPanel.add(createMonedaButton("$1500"));
+
+        // No olvides añadir este paso
         GuardarMonedas();
 
-        add(contentPanel);
+        // Agregar contentPanel al mainPanel
+        mainPanel.add(contentPanel);
+
+        // Añade el mainPanel y el panel de etiquetas al PanelComprador
+        add(añadirmonedas);
+        add(mainPanel);
     }
 
     private void TusMonedas() {
@@ -124,7 +157,6 @@ public class PanelComprador extends JPanel {
         // Actualizar el panel de monedas
         actualizarMonedasPanel();
     }
-
 
     private JButton createMonedaButton(String valor) {
         JButton button = new JButton(valor);
@@ -174,7 +206,6 @@ public class PanelComprador extends JPanel {
         ingresar.setBorder(BorderFactory.createRaisedBevelBorder());
         ingresar.setBackground(new Color(0x60AB90));
         ingresar.setForeground(Color.WHITE);
-
         ingresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,14 +250,14 @@ public class PanelComprador extends JPanel {
         monedasPanel.repaint();
     }
 
-
     public void actualizarPantalla() {
         if (temp == 1) {
             Monedas();
             this.add(Box.createVerticalStrut(15));
             repaint();
         } else {
-            contentPanel.removeAll();
+            mainPanel.removeAll();
+            añadirmonedas.removeAll();
             revalidate();
             repaint();
             Producto();
@@ -236,18 +267,17 @@ public class PanelComprador extends JPanel {
         }
     }
 
-    private JLabel loadImage() {
+    private ImageIcon loadImage() {
         try {
             File imagePath = new File("./expendedorIcon/moneda.png");
             BufferedImage originalImage = ImageIO.read(imagePath);
-            int width = 50;
-            int height = 50;
+            int width = 100;  // Puedes ajustar el tamaño según necesites
+            int height = 100;
             Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            ImageIcon icon = new ImageIcon(scaledImage);
-            return new JLabel(icon);
+            return new ImageIcon(scaledImage);
         } catch (IOException e) {
             e.printStackTrace();
-            return new JLabel("Error loading image: " + e.getMessage());
+            return null;
         }
     }
 
@@ -303,38 +333,32 @@ public class PanelComprador extends JPanel {
                 actualizarProductoSeleccionado();
                 System.out.println(productoSeleccionado);
                 boolean compraExitosa = false;
-                int precioProductoSeleccionado;
 
                 switch (productoSeleccionado) {
                     case "Ninguno":
                         JOptionPane.showMessageDialog(PanelComprador.this, "Por favor, seleccione un producto.");
                         break;
                     case "Coca Cola":
-                        precioProductoSeleccionado = Precios.COCA_COLA.getPrecio();
                         if (procesarCompra(Precios.COCA_COLA.getPrecio(), "Coca Cola")) {
                             compraExitosa = true;
                         }
                         break;
                     case "Sprite":
-                        precioProductoSeleccionado = Precios.SPRITE.getPrecio();
                         if (procesarCompra(Precios.SPRITE.getPrecio(), "Sprite")) {
                             compraExitosa = true;
                         }
                         break;
                     case "Fanta":
-                        precioProductoSeleccionado = Precios.FANTA.getPrecio();
                         if (procesarCompra(Precios.FANTA.getPrecio(), "Fanta")) {
                             compraExitosa = true;
                         }
                         break;
                     case "Super8":
-                        precioProductoSeleccionado = Precios.SUPER8.getPrecio();
                         if (procesarCompra(Precios.SUPER8.getPrecio(), "Super8")) {
                             compraExitosa = true;
                         }
                         break;
                     case "Snickers":
-                        precioProductoSeleccionado = Precios.SNICKERS.getPrecio();
                         if (procesarCompra(Precios.SNICKERS.getPrecio(), "Snickers")) {
                             compraExitosa = true;
                         }
@@ -345,8 +369,8 @@ public class PanelComprador extends JPanel {
                     panelPrincipal.refreshDisplay();
                     actualizarMonedasPanel();
                 } else if (!productoSeleccionado.equals("Ninguno")) {
-                    if (Precios.SNICKERS.getPrecio() > (totalMonedas - expendedor.getVuelto() * 100)) {
-                        JOptionPane.showMessageDialog(PanelComprador.this, "No tienes monedas");
+                    if (Precios.SNICKERS.getPrecio() > totalMonedas) {
+                        JOptionPane.showMessageDialog(PanelComprador.this, "No tienes monedas suficientes.");
                     }
                 }
             }
@@ -354,8 +378,6 @@ public class PanelComprador extends JPanel {
 
         add(compraButton);
     }
-
-
 
     private List<Moneda> removerMonedas(int cantidad) {
         List<Moneda> monedasParaRemover = new ArrayList<>();
@@ -374,9 +396,9 @@ public class PanelComprador extends JPanel {
 
         if (totalRecolectado >= cantidad) {
             listaMonedas.removeAll(monedasParaRemover);
-            return monedasParaRemover; // Devuelve todas las monedas utilizadas en la compra.
+            return monedasParaRemover;
         } else {
-            return null; // No se encontraron monedas suficientes.
+            return null;
         }
     }
 
@@ -397,7 +419,6 @@ public class PanelComprador extends JPanel {
             return false;
         }
     }
-
 
     public void handleMouseEvent(MouseEvent e) {
         System.out.println("Mouse clicked in PanelComprador at x=" + e.getX() + " y=" + e.getY());

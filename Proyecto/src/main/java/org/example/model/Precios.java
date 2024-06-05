@@ -10,7 +10,7 @@ public enum Precios {
     SPRITE(900),      // Precio de Sprite
     FANTA(800),       // Precio de Fanta
     SUPER8(300),      // Precio de Super8
-    SNICKERS(400);    // Precio de Snickers
+    SNICKERS(500);    // Precio de Snickers
 
     private final int precio;  // Variable que almacena el precio del producto.
 

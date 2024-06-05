@@ -14,6 +14,7 @@ import java.util.List;
 
 public class PanelExpendedor extends JPanel {
     private Expendedor expendedor;
+    private PanelComprador panelComprador; // Referencia al PanelComprador
     private JPanel depositoPanel;
     private JButton recogerProductoButton;
     private Image backgroundImage;
@@ -31,16 +32,14 @@ public class PanelExpendedor extends JPanel {
 
     public PanelExpendedor(Expendedor expendedor) {
         this.expendedor = expendedor;
-        this.setPreferredSize(new Dimension(200, 600)); // Ajusta esto según el tamaño de tu imagen o necesidades.
+        this.setPreferredSize(new Dimension(200, 600));
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(new Color(0xE59F9F));
         this.add(Box.createVerticalStrut(20));
         Label();
-        this.add(Box.createVerticalStrut(592));
-        setupUI();
+        this.add(Box.createVerticalStrut(595));
+        recoger();
         deposito();
-
-
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -49,10 +48,10 @@ public class PanelExpendedor extends JPanel {
         });
     }
 
-    private void loadImage(String imagePath) {
-        ImageIcon icon = new ImageIcon(imagePath);
-        backgroundImage = icon.getImage();
+    public void setPanelComprador(PanelComprador panelComprador) {
+        this.panelComprador = panelComprador;
     }
+
 
     private void Label() {
         JPanel titlePanel = new JPanel();
@@ -72,16 +71,25 @@ public class PanelExpendedor extends JPanel {
         this.add(titlePanel);
     }
 
-    private void setupUI() {
+    private void recoger() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         recogerProductoButton = new JButton("Recoger Producto y Vuelto");
+        recogerProductoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        recogerProductoButton.setFont(new Font("Arial", Font.BOLD, 16));
+        recogerProductoButton.setBackground(new Color(0x452891));
+        recogerProductoButton.setForeground(Color.WHITE);
+        recogerProductoButton.setBorder(BorderFactory.createRaisedBevelBorder());
+        recogerProductoButton.setOpaque(true);
+
         recogerProductoButton.addActionListener(e -> {
             Producto productoRecogido = expendedor.getProducto();
+            List<Moneda> vueltoMonedas = expendedor.getVueltoEnMonedas();  // Obtener el vuelto en monedas del expendedor
             if (productoRecogido != null) {
                 JOptionPane.showMessageDialog(null, "Has recogido: " + productoRecogido.getNombre());
-
                 depositoPanel.removeAll();
+                panelComprador.agregarVuelto(vueltoMonedas);  // Pasar las monedas de vuelto al PanelComprador
+                refreshDeposito(); // Refrescar el depósito para mostrar el producto y el vuelto
                 repaint();
             } else {
                 JOptionPane.showMessageDialog(null, "No hay producto para recoger.");
@@ -89,7 +97,11 @@ public class PanelExpendedor extends JPanel {
         });
 
         add(recogerProductoButton);
+        add(Box.createVerticalGlue());
     }
+
+
+
 
 
     private void deposito() {
@@ -98,11 +110,6 @@ public class PanelExpendedor extends JPanel {
         depositoPanel.setBackground(new Color(0x01C35D0, true));
         depositoPanel.setPreferredSize(new Dimension(200, 100));
 
-        JLabel tituloDeposito = new JLabel("Depósito                                                        ");
-        tituloDeposito.setFont(new Font("Arial", Font.BOLD, 18));
-        tituloDeposito.setForeground(Color.WHITE);
-        depositoPanel.add(tituloDeposito);
-
         this.add(depositoPanel, BorderLayout.SOUTH);
     }
 
@@ -110,15 +117,8 @@ public class PanelExpendedor extends JPanel {
         if (!expendedor.getDepositoProductoComprado().isEmpty()) {
             depositoPanel.removeAll();
 
-            JLabel tituloDeposito = new JLabel("Depósito");
-            tituloDeposito.setFont(new Font("Arial", Font.BOLD, 14));
-            tituloDeposito.setAlignmentY(Component.TOP_ALIGNMENT);
-            tituloDeposito.setForeground(Color.WHITE);
-            depositoPanel.add(tituloDeposito);
-
             Producto comprado = expendedor.getDepositoProductoComprado().peek(); // Añade los productos comprados recientemente al panel
             ImageIcon imageIcon = new ImageIcon(comprado.getImagen()); // Camino al archivo
-
 
             JLabel imageLabel = new JLabel(imageIcon);
             depositoPanel.add(imageLabel);
@@ -134,28 +134,40 @@ public class PanelExpendedor extends JPanel {
         subPanelVuelto.setPreferredSize(new Dimension(500, 80));
 
         // Añadir componentes al subPanelVuelto
-
-
-        vuelto = expendedor.getVuelto() - vuelto;
-        JLabel subLabel = new JLabel("$" +  vuelto*100 + "      ");
+        int vuelto = expendedor.getVuelto();
+        JLabel subLabel = new JLabel("$" + vuelto + "      ");
         subLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         subLabel.setForeground(Color.WHITE);
         subPanelVuelto.add(subLabel);
 
-        for (int i = 0; i < vuelto; i++) {
+        for (int i = 0; i < vuelto; i += 100) {
             // Crear el JLabel y establecer la imagen como ícono
             JLabel labelMoneda = new JLabel(new ImageIcon("expendedorIcon/moneda2.png"));
             subPanelVuelto.add(labelMoneda);
         }
-        vuelto = expendedor.getVuelto();
+
         depositoPanel.add(subPanelVuelto);
         depositoPanel.revalidate();
         depositoPanel.repaint();
     }
 
+
     public void handleMouseEvent(MouseEvent e) {
-        rellenarDepositos(expendedor.getNumProductos());
+
+        int xInicio = 50;
+        int yInicio = 50;
+        int ancho = 600;
+        int alto = 580;
+
+        // Obtiene las coordenadas del clic del ratón
+        int xClic = e.getX();
+        int yClic = e.getY();
+
+        if (xClic >= xInicio && xClic <= (xInicio + ancho) && yClic >= yInicio && yClic <= (yInicio + alto)) {
+            rellenarDepositos(expendedor.getNumProductos());
+        }
     }
+
 
     private void rellenarDepositos(int numProductos) {
         List<Deposito<Producto>> depositos = expendedor.getProductos();

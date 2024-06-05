@@ -57,4 +57,8 @@ public class Deposito<T> {
     public T remove(int item) {
         return items.remove(item); // Intenta eliminar el elemento y retorna el resultado de la operación.
     }
+
+    public void clear() {
+        items.clear();
+    }
 }

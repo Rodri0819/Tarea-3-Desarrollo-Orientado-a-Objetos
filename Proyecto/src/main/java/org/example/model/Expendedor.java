@@ -14,7 +14,6 @@ public class Expendedor {
     private Deposito<Moneda> monedaVueltas;
     private List<Deposito<Producto>> productos;
     private Deposito<Producto> depositoProductoComprado;
-    private List<Producto> productosEliminadosTemporalmente = new ArrayList<>();
 
     public Expendedor(int numProductos) {
         productos = new ArrayList<>();
@@ -63,6 +62,18 @@ public class Expendedor {
         }
 
         int cambio = valorMoneda - precioProducto;
+        while (cambio >= 1500) {
+            monedaVueltas.add(new Moneda1500());
+            cambio -= 1500;
+        }
+        while (cambio >= 1000) {
+            monedaVueltas.add(new Moneda1000());
+            cambio -= 1000;
+        }
+        while (cambio >= 500) {
+            monedaVueltas.add(new Moneda500());
+            cambio -= 500;
+        }
         while (cambio >= 100) {
             monedaVueltas.add(new Moneda100());
             cambio -= 100;
@@ -72,6 +83,7 @@ public class Expendedor {
         productoComprado(productoComprado); // Registrar el producto comprado
         System.out.println("Producto comprado y añadido al depósito de productos comprados: " + productoComprado.getNombre());
     }
+
 
 
     private int obtenerIndiceProducto(String nombreProducto) {
@@ -91,8 +103,18 @@ public class Expendedor {
         }
     }
 
+    public List<Moneda> getVueltoEnMonedas() {
+        List<Moneda> vueltoMonedas = new ArrayList<>(monedaVueltas.getAllItems());
+        monedaVueltas.clear();
+        return vueltoMonedas;
+    }
+
     public int getVuelto() {
-        return monedaVueltas.size();
+        int totalVuelto = 0;
+        for (Moneda moneda : monedaVueltas.getAllItems()) {
+            totalVuelto += moneda.getValor();
+        }
+        return totalVuelto;
     }
 
     public Producto getProducto() {
@@ -111,7 +133,4 @@ public class Expendedor {
         return numProductos;
     }
 
-    public List<Producto> getProductosEliminadosTemporalmente() {
-        return new ArrayList<>(productosEliminadosTemporalmente);
-    }
 }
