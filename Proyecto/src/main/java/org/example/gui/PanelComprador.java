@@ -1,4 +1,5 @@
 package org.example.gui;
+
 import org.example.model.*;
 
 import javax.imageio.ImageIO;
@@ -14,19 +15,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PanelComprador es una clase que representa el panel de la interfaz gráfica
+ * para el comprador en una máquina expendedora.
+ */
 public class PanelComprador extends JPanel {
     private PanelPrincipal panelPrincipal;
     private List<Moneda> monedas = new ArrayList<>();
-    private JPanel monedasPanel, contentPanel, añadirmonedas, mainPanel; // Mover contentPanel a nivel de clase
-    private JLabel productoSeleccionadoLabel; // Declaración de etiquetas
+    private JPanel monedasPanel, contentPanel, añadirmonedas, mainPanel;
+    private JLabel productoSeleccionadoLabel;
     private JLabel totalMonedasLabel;
-    private String productoSeleccionado = "Ninguno"; // Almacenar el producto seleccionado
-    private JComboBox<String> comboBox; // ComboBox para seleccionar el producto
-    private int totalMonedas = 0; // Almacenar el total de monedas
+    private String productoSeleccionado = "Ninguno";
+    private JComboBox<String> comboBox;
+    private int totalMonedas = 0;
     private Expendedor expendedor;
     int temp = 1;
     private List<Moneda> listaMonedas = new ArrayList<>();
 
+    /**
+     * Constructor de la clase PanelComprador.
+     *
+     * @param expendedor    el expendedor asociado a este panel
+     * @param panelPrincipal el panel principal de la aplicación
+     */
     public PanelComprador(Expendedor expendedor, PanelPrincipal panelPrincipal) {
         this.expendedor = expendedor;
         this.panelPrincipal = panelPrincipal;
@@ -40,6 +51,9 @@ public class PanelComprador extends JPanel {
         this.add(Box.createVerticalStrut(15));
     }
 
+    /**
+     * Configura y añade las etiquetas al panel.
+     */
     private void Labels() {
         JLabel titulo = new JLabel("Comprador");
         titulo.setFont(new Font("Cooper Black", Font.PLAIN, 20));
@@ -59,36 +73,48 @@ public class PanelComprador extends JPanel {
         add(totalMonedasLabel);
     }
 
-    // Método para actualizar el producto seleccionado
+    /**
+     * Actualiza la etiqueta del producto seleccionado.
+     */
     private void actualizarProductoSeleccionado() {
         productoSeleccionado = (String) comboBox.getSelectedItem();
         productoSeleccionadoLabel.setText("Producto seleccionado: " + productoSeleccionado);
     }
 
+    /**
+     * Actualiza el total de monedas en el panel.
+     *
+     * @param total el nuevo total de monedas
+     */
     public void actualizarTotalMonedas(int total) {
-        totalMonedas = total; // Actualizar el total de monedas
+        totalMonedas = total;
         totalMonedasLabel.setText("Tus Monedas: $" + totalMonedas);
     }
 
+    /**
+     * Agrega el vuelto al panel y actualiza la visualización.
+     *
+     * @param vueltoMonedas la lista de monedas de vuelto
+     */
     public void agregarVuelto(List<Moneda> vueltoMonedas) {
         for (Moneda moneda : vueltoMonedas) {
-            totalMonedas += moneda.getValor(); // Agregar el valor de cada moneda al total
-            monedas.add(moneda); // Añadir cada moneda a la lista de monedas
-            addMonedaToPanel(moneda); // Añadir la moneda al panel
+            totalMonedas += moneda.getValor();
+            monedas.add(moneda);
+            addMonedaToPanel(moneda);
         }
         totalMonedasLabel.setText("Tus Monedas: $" + totalMonedas);
-
-        // Actualizar el panel
         monedasPanel.revalidate();
         monedasPanel.repaint();
     }
 
+    /**
+     * Configura y añade los botones de monedas al panel.
+     */
     private void Monedas() {
         añadirmonedas = new JPanel();
         añadirmonedas.setLayout(new BoxLayout(añadirmonedas, BoxLayout.Y_AXIS));
         añadirmonedas.setOpaque(false);
 
-        // Etiqueta "Añadir Monedas" al principio
         JLabel monedasLabel = new JLabel("Añadir Monedas:");
         monedasLabel.setFont(new Font("Arial", Font.BOLD, 20));
         monedasLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -105,11 +131,10 @@ public class PanelComprador extends JPanel {
         contentPanel.setOpaque(false);
         contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Cargar y mostrar la imagen de la moneda
         ImageIcon imageIcon = loadImage();
         JLabel imageLabel = new JLabel(imageIcon);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 15));  // Añade un margen explícito alrededor de la imagen
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 15));
         mainPanel.add(imageLabel);
 
         contentPanel.add(createMonedaButton("$100"));
@@ -117,17 +142,15 @@ public class PanelComprador extends JPanel {
         contentPanel.add(createMonedaButton("$1000"));
         contentPanel.add(createMonedaButton("$1500"));
 
-        // No olvides añadir este paso
         GuardarMonedas();
-
-        // Agregar contentPanel al mainPanel
         mainPanel.add(contentPanel);
-
-        // Añade el mainPanel y el panel de etiquetas al PanelComprador
         add(añadirmonedas);
         add(mainPanel);
     }
 
+    /**
+     * Configura y añade el panel que muestra las monedas del usuario.
+     */
     private void TusMonedas() {
         JPanel contenPanel = new JPanel();
         contenPanel.setLayout(new BoxLayout(contenPanel, BoxLayout.X_AXIS));
@@ -150,14 +173,22 @@ public class PanelComprador extends JPanel {
         add(contenPanel);
     }
 
+    /**
+     * Añade una nueva moneda al panel de monedas.
+     *
+     * @param nuevaMoneda la nueva moneda a añadir
+     */
     private void addMonedaToPanel(Moneda nuevaMoneda) {
-        // Agregar la nueva moneda a la lista
         listaMonedas.add(nuevaMoneda);
-
-        // Actualizar el panel de monedas
         actualizarMonedasPanel();
     }
 
+    /**
+     * Crea un botón para añadir monedas.
+     *
+     * @param valor el valor de la moneda
+     * @return el botón creado
+     */
     private JButton createMonedaButton(String valor) {
         JButton button = new JButton(valor);
         button.setFont(new Font("Arial", Font.BOLD, 20));
@@ -199,6 +230,9 @@ public class PanelComprador extends JPanel {
         return button;
     }
 
+    /**
+     * Añade el botón para ingresar monedas al panel.
+     */
     private void GuardarMonedas() {
         JButton ingresar = new JButton("Ingresar");
         ingresar.setFont(new Font("Arial", Font.BOLD, 18));
@@ -216,14 +250,13 @@ public class PanelComprador extends JPanel {
         contentPanel.add(ingresar);
     }
 
+    /**
+     * Actualiza el panel de monedas, ordenando y mostrando las monedas.
+     */
     private void actualizarMonedasPanel() {
-        // Ordenar la lista de monedas por su valor de mayor a menor
         listaMonedas.sort((m1, m2) -> Integer.compare(m2.getValor(), m1.getValor()));
-
-        // Limpiar el panel actual
         monedasPanel.removeAll();
 
-        // Volver a agregar todas las monedas ordenadas al panel
         for (Moneda moneda : listaMonedas) {
             JPanel monedaPanel = new JPanel();
             monedaPanel.setLayout(new BoxLayout(monedaPanel, BoxLayout.X_AXIS));
@@ -245,11 +278,13 @@ public class PanelComprador extends JPanel {
             monedasPanel.add(monedaPanel);
         }
 
-        // Actualizar el panel
         monedasPanel.revalidate();
         monedasPanel.repaint();
     }
 
+    /**
+     * Actualiza la pantalla, mostrando los componentes correspondientes según el estado.
+     */
     public void actualizarPantalla() {
         if (temp == 1) {
             Monedas();
@@ -267,11 +302,16 @@ public class PanelComprador extends JPanel {
         }
     }
 
+    /**
+     * Carga y devuelve la imagen de la moneda.
+     *
+     * @return el ImageIcon con la imagen de la moneda
+     */
     private ImageIcon loadImage() {
         try {
             File imagePath = new File("./expendedorIcon/moneda.png");
             BufferedImage originalImage = ImageIO.read(imagePath);
-            int width = 100;  // Puedes ajustar el tamaño según necesites
+            int width = 100;
             int height = 100;
             Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
@@ -281,6 +321,9 @@ public class PanelComprador extends JPanel {
         }
     }
 
+    /**
+     * Configura y añade el panel de selección de productos.
+     */
     private void Producto() {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
@@ -313,6 +356,9 @@ public class PanelComprador extends JPanel {
         add(contentPanel);
     }
 
+    /**
+     * Añade el botón de compra al panel.
+     */
     private void addCompraButton() {
         JButton compraButton = new JButton("Comprar");
         compraButton.setFont(new Font("Arial", Font.BOLD, 20));
@@ -324,7 +370,6 @@ public class PanelComprador extends JPanel {
         compraButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Verificar si ya hay un producto en el depósito de productos comprados
                 if (!expendedor.getDepositoProductoComprado().isEmpty()) {
                     JOptionPane.showMessageDialog(PanelComprador.this, "El depósito ya contiene un producto. Recógelo antes de comprar otro.");
                     return;
@@ -379,11 +424,16 @@ public class PanelComprador extends JPanel {
         add(compraButton);
     }
 
+    /**
+     * Remueve las monedas necesarias para una compra.
+     *
+     * @param cantidad la cantidad de dinero a remover
+     * @return la lista de monedas removidas
+     */
     private List<Moneda> removerMonedas(int cantidad) {
         List<Moneda> monedasParaRemover = new ArrayList<>();
         int totalRecolectado = 0;
 
-        // Ordena las monedas de mayor a menor valor para usar la menor cantidad de monedas posible.
         listaMonedas.sort((m1, m2) -> Integer.compare(m2.getValor(), m1.getValor()));
 
         for (Moneda moneda : listaMonedas) {
@@ -402,6 +452,13 @@ public class PanelComprador extends JPanel {
         }
     }
 
+    /**
+     * Procesa la compra de un producto.
+     *
+     * @param precioProducto el precio del producto
+     * @param producto       el nombre del producto
+     * @return true si la compra fue exitosa, false en caso contrario
+     */
     private boolean procesarCompra(int precioProducto, String producto) {
         List<Moneda> monedasUsadas = removerMonedas(precioProducto);
         if (monedasUsadas != null) {
@@ -420,6 +477,11 @@ public class PanelComprador extends JPanel {
         }
     }
 
+    /**
+     * Maneja los eventos de ratón en el panel.
+     *
+     * @param e el evento de ratón
+     */
     public void handleMouseEvent(MouseEvent e) {
         System.out.println("Mouse clicked in PanelComprador at x=" + e.getX() + " y=" + e.getY());
         if (e.getX() > 100 && e.getX() < 200) {

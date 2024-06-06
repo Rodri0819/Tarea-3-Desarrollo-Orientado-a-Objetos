@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * PanelExpendedor es una clase que representa el panel de la interfaz gráfica
+ * para el expendedor en una máquina expendedora.
+ */
 public class PanelExpendedor extends JPanel {
     private Expendedor expendedor;
     private PanelComprador panelComprador; // Referencia al PanelComprador
@@ -19,7 +22,6 @@ public class PanelExpendedor extends JPanel {
     private JButton recogerProductoButton;
     private Image backgroundImage;
     int vuelto = 0;
-
 
     {
         try {
@@ -30,6 +32,11 @@ public class PanelExpendedor extends JPanel {
         }
     }
 
+    /**
+     * Constructor de la clase PanelExpendedor.
+     *
+     * @param expendedor el expendedor asociado a este panel
+     */
     public PanelExpendedor(Expendedor expendedor) {
         this.expendedor = expendedor;
         this.setPreferredSize(new Dimension(200, 600));
@@ -48,11 +55,18 @@ public class PanelExpendedor extends JPanel {
         });
     }
 
+    /**
+     * Establece la referencia al PanelComprador.
+     *
+     * @param panelComprador el panel del comprador
+     */
     public void setPanelComprador(PanelComprador panelComprador) {
         this.panelComprador = panelComprador;
     }
 
-
+    /**
+     * Configura y añade la etiqueta del título al panel.
+     */
     private void Label() {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
@@ -63,7 +77,6 @@ public class PanelExpendedor extends JPanel {
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         titulo.setOpaque(false);
 
-
         titlePanel.add(Box.createHorizontalGlue());
         titlePanel.add(titulo);
         titlePanel.add(Box.createHorizontalGlue());
@@ -71,6 +84,9 @@ public class PanelExpendedor extends JPanel {
         this.add(titlePanel);
     }
 
+    /**
+     * Configura y añade el botón para recoger producto y vuelto.
+     */
     private void recoger() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -84,12 +100,12 @@ public class PanelExpendedor extends JPanel {
 
         recogerProductoButton.addActionListener(e -> {
             Producto productoRecogido = expendedor.getProducto();
-            List<Moneda> vueltoMonedas = expendedor.getVueltoEnMonedas();  // Obtener el vuelto en monedas del expendedor
+            List<Moneda> vueltoMonedas = expendedor.getVueltoEnMonedas();
             if (productoRecogido != null) {
                 JOptionPane.showMessageDialog(null, "Has recogido: " + productoRecogido.getNombre());
+                panelComprador.agregarVuelto(vueltoMonedas);
+                refreshDeposito();
                 depositoPanel.removeAll();
-                panelComprador.agregarVuelto(vueltoMonedas);  // Pasar las monedas de vuelto al PanelComprador
-                refreshDeposito(); // Refrescar el depósito para mostrar el producto y el vuelto
                 repaint();
             } else {
                 JOptionPane.showMessageDialog(null, "No hay producto para recoger.");
@@ -100,10 +116,9 @@ public class PanelExpendedor extends JPanel {
         add(Box.createVerticalGlue());
     }
 
-
-
-
-
+    /**
+     * Configura y añade el panel del depósito.
+     */
     private void deposito() {
         depositoPanel = new JPanel();
         depositoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -113,12 +128,15 @@ public class PanelExpendedor extends JPanel {
         this.add(depositoPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Refresca el panel del depósito para mostrar el producto comprado y el vuelto.
+     */
     public void refreshDeposito() {
         if (!expendedor.getDepositoProductoComprado().isEmpty()) {
             depositoPanel.removeAll();
 
-            Producto comprado = expendedor.getDepositoProductoComprado().peek(); // Añade los productos comprados recientemente al panel
-            ImageIcon imageIcon = new ImageIcon(comprado.getImagen()); // Camino al archivo
+            Producto comprado = expendedor.getDepositoProductoComprado().peek();
+            ImageIcon imageIcon = new ImageIcon(comprado.getImagen());
 
             JLabel imageLabel = new JLabel(imageIcon);
             depositoPanel.add(imageLabel);
@@ -127,13 +145,11 @@ public class PanelExpendedor extends JPanel {
             depositoPanel.repaint();
         }
 
-        // Creación de un nuevo sub-panel dentro de depositoPanel
         JPanel subPanelVuelto = new JPanel();
         subPanelVuelto.setLayout(new FlowLayout(FlowLayout.CENTER, -20, 0));
-        subPanelVuelto.setBackground(new Color(0x0484848, true)); // Color para diferenciarlo
+        subPanelVuelto.setBackground(new Color(0x0484848, true));
         subPanelVuelto.setPreferredSize(new Dimension(500, 80));
 
-        // Añadir componentes al subPanelVuelto
         int vuelto = expendedor.getVuelto();
         JLabel subLabel = new JLabel("$" + vuelto + "      ");
         subLabel.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -141,7 +157,6 @@ public class PanelExpendedor extends JPanel {
         subPanelVuelto.add(subLabel);
 
         for (int i = 0; i < vuelto; i += 100) {
-            // Crear el JLabel y establecer la imagen como ícono
             JLabel labelMoneda = new JLabel(new ImageIcon("expendedorIcon/moneda2.png"));
             subPanelVuelto.add(labelMoneda);
         }
@@ -151,15 +166,17 @@ public class PanelExpendedor extends JPanel {
         depositoPanel.repaint();
     }
 
-
+    /**
+     * Maneja los eventos de ratón en el panel.
+     *
+     * @param e el evento de ratón
+     */
     public void handleMouseEvent(MouseEvent e) {
-
         int xInicio = 50;
         int yInicio = 50;
         int ancho = 600;
         int alto = 580;
 
-        // Obtiene las coordenadas del clic del ratón
         int xClic = e.getX();
         int yClic = e.getY();
 
@@ -168,7 +185,11 @@ public class PanelExpendedor extends JPanel {
         }
     }
 
-
+    /**
+     * Rellena los depósitos de productos.
+     *
+     * @param numProductos el número de productos a añadir
+     */
     private void rellenarDepositos(int numProductos) {
         List<Deposito<Producto>> depositos = expendedor.getProductos();
         for (int i = 0; i < depositos.size(); i++) {
@@ -200,7 +221,6 @@ public class PanelExpendedor extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         } else {
@@ -223,7 +243,6 @@ public class PanelExpendedor extends JPanel {
         for (int i = 0; i < expendedor.getProductos().size(); i++) {
             Deposito<Producto> deposito = expendedor.getProductos().get(i);
             for (int j = 0; j < deposito.getAllItems().size(); j++) {
-
                 Producto p = deposito.getAllItems().get(j);
 
                 g.drawImage(p.getImagen(), x, y, 50, 50, this);
@@ -244,6 +263,5 @@ public class PanelExpendedor extends JPanel {
             y = yStart;
             x = xStart;
         }
-
     }
 }

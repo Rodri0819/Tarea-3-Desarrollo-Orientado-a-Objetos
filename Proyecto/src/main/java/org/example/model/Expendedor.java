@@ -3,6 +3,9 @@ package org.example.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Expendedor es una clase que representa una máquina expendedora que dispensa productos y maneja monedas.
+ */
 public class Expendedor {
     public static final int COCA = 1;
     public static final int SPRITE = 2;
@@ -15,6 +18,11 @@ public class Expendedor {
     private List<Deposito<Producto>> productos;
     private Deposito<Producto> depositoProductoComprado;
 
+    /**
+     * Constructor de la clase Expendedor.
+     *
+     * @param numProductos el número de productos iniciales en cada depósito
+     */
     public Expendedor(int numProductos) {
         productos = new ArrayList<>();
         monedaVueltas = new Deposito<>();
@@ -34,11 +42,24 @@ public class Expendedor {
         }
     }
 
+    /**
+     * Registra el producto comprado en el depósito correspondiente.
+     *
+     * @param producto el producto comprado
+     */
     public void productoComprado(Producto producto) {
         depositoProductoComprado.add(producto);
     }
 
-
+    /**
+     * Realiza la compra de un producto si el pago es correcto.
+     *
+     * @param m              la moneda utilizada para la compra
+     * @param nombreProducto el nombre del producto a comprar
+     * @throws PagoIncorrectoException   si la moneda es nula
+     * @throws NoHayProductoException    si el producto no está disponible
+     * @throws PagoInsuficienteException si el valor de la moneda es insuficiente
+     */
     public void comprarProducto(Moneda m, String nombreProducto) throws PagoIncorrectoException, NoHayProductoException, PagoInsuficienteException {
         if (m == null) {
             throw new PagoIncorrectoException("La moneda no puede ser nula");
@@ -84,8 +105,12 @@ public class Expendedor {
         System.out.println("Producto comprado y añadido al depósito de productos comprados: " + productoComprado.getNombre());
     }
 
-
-
+    /**
+     * Obtiene el índice del producto basado en su nombre.
+     *
+     * @param nombreProducto el nombre del producto
+     * @return el índice del producto o -1 si no se encuentra
+     */
     private int obtenerIndiceProducto(String nombreProducto) {
         switch (nombreProducto) {
             case "Coca Cola":
@@ -103,12 +128,22 @@ public class Expendedor {
         }
     }
 
+    /**
+     * Obtiene el vuelto en monedas.
+     *
+     * @return la lista de monedas del vuelto
+     */
     public List<Moneda> getVueltoEnMonedas() {
         List<Moneda> vueltoMonedas = new ArrayList<>(monedaVueltas.getAllItems());
         monedaVueltas.clear();
         return vueltoMonedas;
     }
 
+    /**
+     * Obtiene el total del vuelto.
+     *
+     * @return el total del vuelto en valor monetario
+     */
     public int getVuelto() {
         int totalVuelto = 0;
         for (Moneda moneda : monedaVueltas.getAllItems()) {
@@ -117,20 +152,39 @@ public class Expendedor {
         return totalVuelto;
     }
 
+    /**
+     * Obtiene el producto comprado más reciente.
+     *
+     * @return el producto comprado
+     */
     public Producto getProducto() {
         return depositoProductoComprado.get();
     }
 
+    /**
+     * Obtiene la lista de depósitos de productos.
+     *
+     * @return la lista de depósitos de productos
+     */
     public List<Deposito<Producto>> getProductos() {
         return productos;
     }
 
+    /**
+     * Obtiene el depósito de productos comprados.
+     *
+     * @return el depósito de productos comprados
+     */
     public Deposito<Producto> getDepositoProductoComprado() {
         return depositoProductoComprado;
     }
 
+    /**
+     * Obtiene el número de productos iniciales.
+     *
+     * @return el número de productos
+     */
     public int getNumProductos() {
         return numProductos;
     }
-
 }
